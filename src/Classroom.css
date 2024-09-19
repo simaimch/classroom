@@ -1,0 +1,10 @@
+.Classroom{
+    width: 100%;
+    height: 100%;
+    background: #111;
+    display: grid;
+    --rowCount: 6;
+    --columnCount: 8;
+    grid-template-columns: repeat(var(--columnCount), 1fr);
+    grid-template-rows: repeat(var(--rowCount), 1fr);
+}
