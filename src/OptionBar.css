@@ -1,0 +1,31 @@
+.OptionBar{
+    background-color: slateblue;
+    grid-area: optionsBar;
+    display: grid;
+}
+
+.OptionBar button{
+    width: 100%;
+    border: black 1px solid;
+    cursor: pointer;
+}
+
+.OptionBar button.selected{
+    border: black 5px solid
+}
+
+.OptionBar #studentMode_p{
+    background-color: green;
+}
+
+.OptionBar #studentMode_pp{
+    background-color: lime;
+}
+
+.OptionBar #studentMode_m{
+    background-color: rgb(128, 0, 0);
+}
+
+.OptionBar #studentMode_mm{
+    background-color: rgb(255, 0, 0);
+}

@@ -4,9 +4,13 @@ export default function MenuBar(
     {
         editMode,
         setEditMode,
+        load,
+        save,
     }:{
         editMode: boolean,
         setEditMode: (editMode:boolean)=>any,
+        load: ()=>any,
+        save: ()=>any,
     }){
 
     const editButton = editMode ? 
@@ -16,6 +20,14 @@ export default function MenuBar(
     return(
         <div className="MenuBar">
             {editButton}
+
+            <button onClick={load}>
+                Load
+            </button>
+
+            <button onClick={save}>
+                Save
+            </button>
         </div>
     );
 }

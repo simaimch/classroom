@@ -16,7 +16,7 @@ function Classroom(
 ) {
     const studentList = course.students.map(student=>{
       return(
-        <StudentView student={student} editMode={editMode}></StudentView>
+        <StudentView key={student.id} student={student} editMode={editMode}></StudentView>
       );
     });
 

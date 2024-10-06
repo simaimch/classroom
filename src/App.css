@@ -4,4 +4,8 @@
     position: absolute;
     display: grid;
     grid-template-rows: 2em 1fr;
+    grid-template-columns: 1fr 10em;
+    grid-template-areas:
+      "menuBar optionsBar" 
+      "main    optionsBar";
 }

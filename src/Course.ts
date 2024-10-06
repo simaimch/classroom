@@ -8,4 +8,8 @@ export default class Course{
             new Student()
         ];
     }
+
+    set(updateCourse: Course){
+        this.students = updateCourse.students;    
+    }
 }
