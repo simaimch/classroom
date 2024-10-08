@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import './App.css';
-import Course from './_types/Course';
 import IndexPage from './IndexPage/IndexPage';
 import { AccountContext } from './_contexts/AccountContext';
 import Account from './Account';
