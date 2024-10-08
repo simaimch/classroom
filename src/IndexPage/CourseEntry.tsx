@@ -21,7 +21,7 @@ export default function CourseEntry(
 		<div onClick={(e)=>{selectFunction()}}>
 			<span className="courseLabel">{course.label}</span>
 			{
-				deleteStep == 0
+				deleteStep === 0
 				&&
 				<button onClick={(e)=>{
 					setDeleteStep(1);
@@ -30,7 +30,7 @@ export default function CourseEntry(
 			}
 
 			{
-				deleteStep == 1
+				deleteStep === 1
 				&&
 				<button onClick={(e)=>{
 					deleteFunction();

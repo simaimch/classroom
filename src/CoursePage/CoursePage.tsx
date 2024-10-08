@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import StudentEntry from "./StudentEntry";
 import Student from "../_types/Student";
-import Course from "../_types/Course";
 import Account from "../Account";
 import { SetAccount } from "../App";
 import updateObject from "../_helpers/updateObject";

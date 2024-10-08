@@ -9,7 +9,7 @@ export default function LessonPage(){
     let {courseId, lessonId} = useParams();
 	const account = useContext(AccountContext);
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const [editMode, setEditMode] = useState<boolean>(false);
 

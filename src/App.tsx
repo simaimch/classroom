@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import './App.css';
-import Classroom from './Classroom';
 import Course from './_types/Course';
-import MenuBar from './LessonPage/MenuBar';
-import OptionBar from './OptionBar';
 import IndexPage from './IndexPage/IndexPage';
 import { AccountContext } from './_contexts/AccountContext';
 import Account from './Account';
@@ -30,9 +27,9 @@ function App() {
 	
 	const [course, setCourse] = useState(new Course());
 
-	const [studentMode, setStudentMode] = useState<string>('');
+	//const [studentMode, setStudentMode] = useState<string>('');
 
-	function load(){
+	/*function load(){
 	const newCourse = new Course();
 		setCourse(newCourse);
 	}
@@ -40,7 +37,7 @@ function App() {
 	function save(){
 	const courseSerialized = JSON.stringify(course);
 	console.log(courseSerialized);
-	}
+	}*/
 
 	return (
 		<AccountContext.Provider value={account}>
