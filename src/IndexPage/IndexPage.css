@@ -1,0 +1,28 @@
+#indexPage ul#coursesList  {
+	padding: 0;
+}
+
+
+
+#indexPage #coursesList button {
+	position: absolute;
+	right: 1em;
+}
+
+#indexPage #coursesList .courseLabel {
+	font-weight: bold;
+}
+
+#indexPage #coursesList li{
+	list-style: none;
+	background: #111;
+	color: #eee;
+	padding: 1em;
+	position: relative;
+	cursor: pointer;
+}
+
+#indexPage #coursesList li:hover {
+	background: #333;
+}
+

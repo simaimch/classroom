@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Student from './Student';
+import Student from './_types/Student';
 import './StudentView.css';
 
 export default function StudentView(

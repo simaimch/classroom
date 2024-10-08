@@ -20,14 +20,6 @@ export default function MenuBar(
     return(
         <div className="MenuBar">
             {editButton}
-
-            <button onClick={load}>
-                Load
-            </button>
-
-            <button onClick={save}>
-                Save
-            </button>
         </div>
     );
 }

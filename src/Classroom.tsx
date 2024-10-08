@@ -1,6 +1,6 @@
 import './Classroom.css';
-import Course from './Course';
-import Student from './Student';
+import Course from './_types/Course';
+import Student from './_types/Student';
 import StudentView from './StudentView';
 
 function Classroom(
@@ -14,11 +14,12 @@ function Classroom(
       editMode: boolean,
     }
 ) {
-    const studentList = course.students.map(student=>{
+    /*const studentList = course.students.map(student=>{
       return(
         <StudentView key={student.id} student={student} editMode={editMode}></StudentView>
       );
-    });
+    });*/
+    const studentList = <></>;
 
     return (
       <div className="Classroom">

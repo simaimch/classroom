@@ -1,0 +1,22 @@
+.container{
+    display: contents;
+}
+
+.lesson h1{
+    display: none;
+}
+
+.lesson .students{
+    display: grid;
+    grid-template-columns: repeat(var(--columnCount), 1fr);
+    grid-template-rows: repeat(var(--rowCount), 1fr);
+    height: 90vh;
+}
+
+.lesson .students .student {
+    background: lime;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
