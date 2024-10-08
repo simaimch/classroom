@@ -25,7 +25,7 @@ function App() {
 	[account, setAccount] = useLocalStorage<Account>('account',emptyAccount);
 
 	
-	const [course, setCourse] = useState(new Course());
+	//const [course, setCourse] = useState(new Course());
 
 	//const [studentMode, setStudentMode] = useState<string>('');
 

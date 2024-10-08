@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import "./LessonPage.css";
 import StudentWidget from "./StudentWidget";
@@ -8,8 +8,6 @@ import MenuBar from "./MenuBar";
 export default function LessonPage(){
     let {courseId, lessonId} = useParams();
 	const account = useContext(AccountContext);
-
-    //const navigate = useNavigate();
 
     const [editMode, setEditMode] = useState<boolean>(false);
 
