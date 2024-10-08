@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 
 import './App.css';
 import IndexPage from './IndexPage/IndexPage';
@@ -25,7 +25,7 @@ function App() {
 
 	return (
 		<AccountContext.Provider value={account}>
-			<BrowserRouter>
+			<HashRouter>
 				<Routes>
 					<Route path="/">
 						<Route index element={<IndexPage></IndexPage>} />
@@ -40,7 +40,7 @@ function App() {
 						</Route>	
 					</Route>
 				</Routes>
-			</BrowserRouter>
+			</HashRouter>
 		</AccountContext.Provider>
 	);
 
