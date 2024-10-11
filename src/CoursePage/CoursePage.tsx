@@ -62,6 +62,7 @@ export default function CoursePage(){
 		const newStudent = new Student();
 		newStudent.name = newStudentLabel;
 		const newStudentId = newStudentLabel;
+		newStudent.id = newStudentId;
 
 		const accountUpdate:{[key:string]:any} = {courses:{}};
 		const courseUpdate:{[key:string]:any} = {students:{}};

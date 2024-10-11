@@ -4,6 +4,11 @@ import { AccountContext } from "../_contexts/AccountContext";
 import "./LessonPage.css";
 import StudentWidget from "./StudentWidget";
 import MenuBar from "./MenuBar";
+import Lesson from "../_types/Lesson";
+import StudentLesson from "../_types/StudentLesson";
+import Account from "../Account";
+import updateObject from "../_helpers/updateObject";
+import { SetAccount } from "../App";
 
 export default function LessonPage(){
     let {courseId, lessonId} = useParams();
@@ -33,10 +38,42 @@ export default function LessonPage(){
         "--columnCount": layoutWidth,
     } as React.CSSProperties;
 
+    function moveFunction(student:StudentLesson):(deltaX:number,deltaY:number)=>any{
+        return function(deltaX:number,deltaY:number){
+			if(!account)
+				throw new Error("Account unset");
+			const targetPosition = [student.sitzplatz[0]+deltaX,student.sitzplatz[1]+deltaY];
+			const studentAtTargetPosition = studentByPosition(targetPosition[0],targetPosition[1]);
+			const updateLesson:Lesson = {students:{}};
+
+			const updateSutdent:StudentLesson = {...student};
+			updateSutdent.sitzplatz = targetPosition;
+
+			updateLesson.students[updateSutdent.id] = updateSutdent;
+
+			if(studentAtTargetPosition){
+				const updateStudentAtTarget:StudentLesson = {...studentAtTargetPosition, sitzplatz: student.sitzplatz};
+				updateLesson.students[updateStudentAtTarget.id] = updateStudentAtTarget;
+			}
+
+			const updateCourse:{[key:string]:any} = {lessons:{}};
+			updateCourse.lessons[lessonId ?? ""] = updateLesson;
+
+			const updateAccount:{[key:string]:any} = {courses:{}};
+			updateAccount.courses[courseId ?? ""] = updateCourse;
+
+			SetAccount(updateObject<Account>(account,updateAccount));
+        }
+    }
+
+    function studentByPosition(x:number, y:number){
+		return Object.values(lessonToDisplay.students).find((student)=>student.sitzplatz[0]===x&&student.sitzplatz[1]===y);
+    }
+
     const students = Object.entries(lessonToDisplay.students).map(([id,student])=>{
         return (
             <div className="container" key={id}>
-                <StudentWidget student={student}></StudentWidget>
+                <StudentWidget student={student} inEditMode={editMode} moveFunction={moveFunction(student)}></StudentWidget>
             </div>
         );
     });
@@ -44,11 +81,12 @@ export default function LessonPage(){
     return(
         <div className="page lesson">
             <h1>{courseToDisplay?.label}, Unterricht {lessonId}</h1>
-            <MenuBar editMode={editMode} setEditMode={setEditMode} load={function () {
-                throw new Error("Function not implemented.");
-            } } save={function () {
-                throw new Error("Function not implemented.");
-            } }></MenuBar>
+            <MenuBar 
+				editMode={editMode} 
+				setEditMode={setEditMode} 
+				saveLayout={function () {
+                	throw new Error("Function not implemented.");
+           	 } }></MenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
             </div>

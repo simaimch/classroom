@@ -4,13 +4,11 @@ export default function MenuBar(
     {
         editMode,
         setEditMode,
-        load,
-        save,
+        saveLayout,
     }:{
         editMode: boolean,
         setEditMode: (editMode:boolean)=>any,
-        load: ()=>any,
-        save: ()=>any,
+        saveLayout: ()=>any,
     }){
 
     const editButton = editMode ? 
@@ -20,6 +18,7 @@ export default function MenuBar(
     return(
         <div className="MenuBar">
             {editButton}
+            <button onClick={saveLayout}>Sitzplan speichern</button>
         </div>
     );
 }

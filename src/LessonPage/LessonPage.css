@@ -13,10 +13,3 @@
     height: 90vh;
 }
 
-.lesson .students .student {
-    background: lime;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-}

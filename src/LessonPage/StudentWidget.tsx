@@ -1,9 +1,20 @@
 import Student from "../_types/Student";
+import StudentMoveOverlay from "./StudentMoveOverlay";
+
+import './StudentWidget.css';
 
 export default function StudentWidget(
-    {student}
+    {
+        student,
+        inEditMode,
+        moveFunction,
+    }
     :
-    {student:Student}
+    {
+        student:Student,
+        inEditMode:boolean,
+        moveFunction:(deltaX:number,deltaY:number)=>any,
+    }
 ){
     const sitzplatzX = student.sitzplatz[0] || 1;
     const sitzplatzY = student.sitzplatz[1] || 1;
@@ -14,8 +25,17 @@ export default function StudentWidget(
         color: 'red'
     }
 
+    const classes = ["student"];
+
+    if(inEditMode)
+        classes.push("editing");
+
+
     return (
-        <div className="student" style={style}>
+        <div className={classes.join(" ")} style={style}>
+            {
+                inEditMode && <StudentMoveOverlay moveFunction={moveFunction}></StudentMoveOverlay>
+            }
             <span className="studentName">{student.name}</span>
         </div>
     );
