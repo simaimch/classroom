@@ -66,6 +66,29 @@ export default function LessonPage(){
         }
     }
 
+    function saveLayout(){
+        if(!account)
+            throw new Error("Account unset");
+
+        if(!courseId)
+            throw new Error("courseId unset");
+
+        if(!lessonId)
+            throw new Error("lessonId unset");
+
+        const updateCourse:{[key:string]:any} = {students:{}};
+        
+        for(const [studentId,student] of Object.entries(lessonToDisplay.students)){
+            updateCourse.students[studentId] = {sitzplatz: student.sitzplatz};
+        }
+
+        const updateAccount:{[key:string]:any} = {courses:{[courseId]: updateCourse}};
+
+        console.warn(updateAccount);
+
+        SetAccount(updateObject<Account>(account,updateAccount));
+    }
+
     function studentByPosition(x:number, y:number){
 		return Object.values(lessonToDisplay.students).find((student)=>student.sitzplatz[0]===x&&student.sitzplatz[1]===y);
     }
@@ -84,9 +107,7 @@ export default function LessonPage(){
             <MenuBar 
 				editMode={editMode} 
 				setEditMode={setEditMode} 
-				saveLayout={function () {
-                	throw new Error("Function not implemented.");
-           	 } }></MenuBar>
+				saveLayout={saveLayout}></MenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
             </div>
