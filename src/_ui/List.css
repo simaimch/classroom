@@ -1,0 +1,27 @@
+.List{
+    padding: 0;
+}
+
+
+
+.List button {
+    position: absolute;
+    right: 1em;
+}
+
+.List .label {
+    font-weight: bold;
+}
+
+.List .entry {
+    list-style: none;
+    background: #111;
+    color: #eee;
+    padding: 1em;
+    position: relative;
+    cursor: pointer;
+}
+
+.List .entry:hover {
+    background: #333;
+}

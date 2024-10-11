@@ -9,6 +9,9 @@ import updateObject from "../_helpers/updateObject";
 import Lesson from "../_types/Lesson";
 import StudentLesson from "../_types/StudentLesson";
 
+import '../_ui/List.css';
+import LessonEntry from "./LessonEntry";
+
 export default function CoursePage(){
 	let {courseId} = useParams();
 	const account = useContext(AccountContext);
@@ -24,8 +27,11 @@ export default function CoursePage(){
 		.map(
 			([id,lesson]) =>
 			{
-				return	<li key={id} onClick={(e)=>{navigate(`lesson/${id}`)}}>
-							{id}
+				return	<li className="entry" key={id} onClick={(e)=>{navigate(`lesson/${id}`)}}>
+							<LessonEntry lesson={lesson} deleteFunction={function () {
+						throw new Error("Function not implemented.");
+					} }>{id}</LessonEntry>
+							
 						</li>
 			}
 		);
@@ -35,7 +41,7 @@ export default function CoursePage(){
 		.map(
 			([id, student]) => 
 			{
-				return  <li key={id}>
+				return  <li key={id} className="entry">
 							<StudentEntry student={student} deleteFunction={()=>{deleteStudent(id)}}></StudentEntry>
 						</li>
 			}
@@ -99,7 +105,7 @@ export default function CoursePage(){
 			<Link to="layout">Sitzplan</Link>
 			<button onClick={startLesson}>Unterricht starten</button>
 			<h2>Schüler</h2>
-			<ul>
+			<ul className="List">
 				{studentsList}
 			</ul>
 			Neuer Schüler:
@@ -112,7 +118,7 @@ export default function CoursePage(){
 			}
 
 			<h2>Unterrichtseinheiten</h2>
-			<ul>{lessonsList}</ul>
+			<ul className="List">{lessonsList}</ul>
 		</div>
 	);
 }

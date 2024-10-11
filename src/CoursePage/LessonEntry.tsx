@@ -1,22 +1,25 @@
 import { useState } from "react";
 import Student from "../_types/Student";
+import Lesson from "../_types/Lesson";
 
-export default function StudentEntry(
+export default function LessonEntry(
     {
-        student,
+        children,
+        lesson,
         deleteFunction,
     }
     :
     {
-        student:Student,
+        children: any,
+        lesson:Lesson,
         deleteFunction: ()=>any,
     }
 ){
     const [deleteStep, setDeleteStep] = useState<number>(0);
 
-    return (
+    return(
         <>
-            <span className="label">{student.name}</span>
+            <span className="label">{children}</span>
             {
 				deleteStep === 0
 				&&

@@ -7,6 +7,7 @@ import { md5 } from "../_helpers/md5";
 import CourseEntry from "./CourseEntry";
 
 import './IndexPage.css';
+import '../_ui/List.css';
 import { useNavigate } from "react-router-dom";
 
 export default function IndexPage(){
@@ -20,7 +21,7 @@ export default function IndexPage(){
 
 	const coursesList = Object.entries(account?.courses ?? {}).map(
 		([id, course]) => {
-			return  <li key={id}>
+			return  <li className="entry" key={id}>
 						<CourseEntry 
 							course={course} 
 							deleteFunction={()=>{deleteCourse(id);}} 
@@ -74,7 +75,7 @@ export default function IndexPage(){
 		<div className="page" id="indexPage">
 			<h1>Classrooms</h1>
 			<h2>Klassen</h2>
-			<ul id="coursesList">
+			<ul id="coursesList" className="List">
 				{coursesList}
 			</ul>
 			Neue Klasse:

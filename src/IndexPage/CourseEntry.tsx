@@ -19,7 +19,7 @@ export default function CourseEntry(
 
 	return (
 		<div onClick={(e)=>{selectFunction()}}>
-			<span className="courseLabel">{course.label}</span>
+			<span className="label">{course.label}</span>
 			{
 				deleteStep === 0
 				&&
