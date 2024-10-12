@@ -1,0 +1,28 @@
+.rating .label{
+    
+    text-align: center;
+    
+}
+
+
+
+.ratings{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+  }
+  .rating{
+    width:100%;
+    height:100%;
+    align-content: center;
+    border: black 2px solid;
+    cursor: pointer;
+  }
+
+.rating:hover{
+    border-style: dotted;
+}
+
+.rating.selected{
+    border-color: red;
+}

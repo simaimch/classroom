@@ -2,14 +2,30 @@
     display: contents;
 }
 
-.lesson h1{
+.page.lesson h1{
     display: none;
 }
 
-.lesson .students{
+.page.lesson .ratings{
+    grid-area: ratings;
+}
+
+.page.lesson .students{
     display: grid;
     grid-template-columns: repeat(var(--columnCount), 1fr);
     grid-template-rows: repeat(var(--rowCount), 1fr);
-    height: 90vh;
+    grid-area: students;
+}
+
+.page.lesson{
+    display: grid;
+    grid-template-rows: 2em 1fr;
+    grid-template-columns: 1fr 20vw;
+    height: 100vh;
+    grid-template-areas: "menu menu" "students ratings";
+}
+
+.page.lesson .MenuBar{
+    grid-area: menu;
 }
 

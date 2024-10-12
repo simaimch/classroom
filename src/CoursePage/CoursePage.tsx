@@ -85,7 +85,7 @@ export default function CoursePage(){
 		const newLessonId = `${Object.keys(courseToDisplay.lessons).length}`;
 		const newLesson = new Lesson();
 		for(const [studentId, student] of Object.entries(courseToDisplay.students)){
-			const studentOfLesson:StudentLesson = {...student};
+			const studentOfLesson:StudentLesson = {...student, ratings: {}};
 			newLesson.students[studentId] = studentOfLesson;
 		}
 

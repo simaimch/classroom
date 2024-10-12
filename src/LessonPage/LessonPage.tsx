@@ -9,12 +9,15 @@ import StudentLesson from "../_types/StudentLesson";
 import Account from "../_types/Account";
 import updateObject from "../_helpers/updateObject";
 import { SetAccount } from "../App";
+import RatingWidget from "./RatingWidget";
 
 export default function LessonPage(){
     let {courseId, lessonId} = useParams();
 	const account = useContext(AccountContext);
 
     const [editMode, setEditMode] = useState<boolean>(false);
+
+    const [selectedRating,setSelectedRating] = useState<string>("");
 
     if(!account)
         return (<>Account connection failed</>);
@@ -37,6 +40,16 @@ export default function LessonPage(){
         "--rowCount": laxoutHeight,
         "--columnCount": layoutWidth,
     } as React.CSSProperties;
+
+    function addRatingFunction(student:StudentLesson, ratingId:string){
+        return function(){
+            if(!account || !courseId || !lessonId)
+                return;
+            const updateCourse:{[key:string]:any} = {lessons:{[lessonId]:{students:{[student.id]:{ratings:{[selectedRating]:(student.ratings[selectedRating] || 0)+1}}}}}};
+            const updateAccount:{[key:string]:any} = {courses:{[courseId]: updateCourse}};
+            SetAccount(updateObject<Account>(account,updateAccount));
+        }
+    }
 
     function moveFunction(student:StudentLesson):(deltaX:number,deltaY:number)=>any{
         return function(deltaX:number,deltaY:number){
@@ -93,10 +106,23 @@ export default function LessonPage(){
 		return Object.values(lessonToDisplay.students).find((student)=>student.sitzplatz[0]===x&&student.sitzplatz[1]===y);
     }
 
+    const ratings = Object.entries(account.ratingTypes).map(([id,ratingType])=>{
+        return (
+            <div key={id} className={"rating"+(selectedRating === id ? " selected" : "")} onClick={(e)=>{setSelectedRating(id)}}>
+                <RatingWidget ratingType={ratingType}></RatingWidget>
+            </div>
+        )
+    });
+
     const students = Object.entries(lessonToDisplay.students).map(([id,student])=>{
         return (
             <div className="container" key={id}>
-                <StudentWidget student={student} inEditMode={editMode} moveFunction={moveFunction(student)}></StudentWidget>
+                <StudentWidget
+                    student={student}
+                    inEditMode={editMode}
+                    moveFunction={moveFunction(student)}
+                    addRatingFunction={addRatingFunction(student, selectedRating)}
+                ></StudentWidget>
             </div>
         );
     });
@@ -110,6 +136,9 @@ export default function LessonPage(){
 				saveLayout={saveLayout}></MenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
+            </div>
+            <div className="ratings">
+                {ratings}
             </div>
         </div>
     );

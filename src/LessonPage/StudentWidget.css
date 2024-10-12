@@ -7,6 +7,19 @@
 	position: relative;
 }
 
+.lesson .students .student .addRatingOverlay {
+	width: 100%;
+	position: absolute;
+	height: 100%;
+	cursor: pointer;
+}
+.lesson .students .student .currentRatings{
+font-size: 0.5em;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
 .lesson .students .student.editing {
 	font-style: italic;
 }
