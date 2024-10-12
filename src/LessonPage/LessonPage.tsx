@@ -6,7 +6,7 @@ import StudentWidget from "./StudentWidget";
 import MenuBar from "./MenuBar";
 import Lesson from "../_types/Lesson";
 import StudentLesson from "../_types/StudentLesson";
-import Account from "../Account";
+import Account from "../_types/Account";
 import updateObject from "../_helpers/updateObject";
 import { SetAccount } from "../App";
 

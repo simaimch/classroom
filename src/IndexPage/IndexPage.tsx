@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { AccountContext } from "../_contexts/AccountContext";
 import { SetAccount } from "../App";
-import Account from "../Account";
+import Account from "../_types/Account";
 import Course from "../_types/Course";
 import { md5 } from "../_helpers/md5";
 import CourseEntry from "./CourseEntry";

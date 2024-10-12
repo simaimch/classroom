@@ -1,5 +1,5 @@
-import Course from "./_types/Course";
-import RatingType from "./_types/RatingType";
+import Course from "./Course";
+import RatingType from "./RatingType";
 
 export default class Account{
     

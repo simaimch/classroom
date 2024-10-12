@@ -4,7 +4,7 @@ import { Routes, Route, HashRouter } from "react-router-dom";
 import './App.css';
 import IndexPage from './IndexPage/IndexPage';
 import { AccountContext } from './_contexts/AccountContext';
-import Account from './Account';
+import Account from './_types/Account';
 import useLocalStorage from './_helpers/useLocalStorage';
 import CoursePage from './CoursePage/CoursePage';
 import LayoutPage from './LayoutPage/LayoutPage';
