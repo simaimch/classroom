@@ -41,14 +41,20 @@ export default function LessonPage(){
         "--columnCount": layoutWidth,
     } as React.CSSProperties;
 
-    function addRatingFunction(student:StudentLesson, ratingId:string){
+    function addRatingFunction(student:StudentLesson, ratingId:string, inc:number=1){
         return function(){
-            if(!account || !courseId || !lessonId)
-                return;
-            const updateCourse:{[key:string]:any} = {lessons:{[lessonId]:{students:{[student.id]:{ratings:{[selectedRating]:(student.ratings[selectedRating] || 0)+1}}}}}};
-            const updateAccount:{[key:string]:any} = {courses:{[courseId]: updateCourse}};
-            SetAccount(updateObject<Account>(account,updateAccount));
+            const targetRating = (student.ratings[selectedRating] || 0)+inc;
+            setRating(student, ratingId, targetRating);
         }
+    }
+
+    function setRating(student:StudentLesson, ratingId:string, targetValue:number){
+        if(!account || !courseId || !lessonId)
+            return;
+
+        const updateCourse:{[key:string]:any} = {lessons:{[lessonId]:{students:{[student.id]:{ratings:{[ratingId]:targetValue}}}}}};
+        const updateAccount:{[key:string]:any} = {courses:{[courseId]: updateCourse}};
+        SetAccount(updateObject<Account>(account,updateAccount));
     }
 
     function moveFunction(student:StudentLesson):(deltaX:number,deltaY:number)=>any{
@@ -106,9 +112,17 @@ export default function LessonPage(){
 		return Object.values(lessonToDisplay.students).find((student)=>student.sitzplatz[0]===x&&student.sitzplatz[1]===y);
     }
 
+    function undo(){
+
+    }
+
     const ratings = Object.entries(account.ratingTypes).map(([id,ratingType])=>{
+        const style = {
+            background: `hsl(${ratingType.color[0]}, ${ratingType.color[1]*100}%, ${ratingType.color[2]*100}%)`,
+            color:ratingType.color[2] >= 0.35 ? 'black' : 'white',
+        };
         return (
-            <div key={id} className={"rating"+(selectedRating === id ? " selected" : "")} onClick={(e)=>{setSelectedRating(id)}}>
+            <div key={id} style={style} className={"rating"+(selectedRating === id ? " selected" : "")} onClick={(e)=>{setSelectedRating(id)}}>
                 <RatingWidget ratingType={ratingType}></RatingWidget>
             </div>
         )
@@ -128,12 +142,13 @@ export default function LessonPage(){
     });
 
     return(
-        <div className="page lesson">
+        <div className="lesson">
             <h1>{courseToDisplay?.label}, Unterricht {lessonId}</h1>
             <MenuBar 
 				editMode={editMode} 
 				setEditMode={setEditMode} 
-				saveLayout={saveLayout}></MenuBar>
+				saveLayout={saveLayout}
+                undoFunction={undo}></MenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
             </div>

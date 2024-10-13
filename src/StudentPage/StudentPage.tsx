@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import { Line } from "react-chartjs-2";
 import { CategoryScale, Chart, ChartData, ChartDataset, Legend, LineElement, LinearScale, PointElement, Tooltip } from "chart.js";
+import Menu from "./Menu";
+import '../_ui/List.css';
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Legend, Tooltip);
 
@@ -21,14 +23,16 @@ export default function StudentPage(){
     const student = course.students[studentId];
 
     const studentLessons = Object.fromEntries(
-        Object.entries(course.lessons).map(([lessonId,lesson])=>{
-            return [lessonId,
-                {
-                    lesson: lesson,
-                    ratings: lesson.students[studentId ?? ""].ratings
-                }
-            ]
-        })
+        Object.entries(course.lessons)
+            .map(([lessonId,lesson])=>{
+                const studentLesson = lesson.students[studentId ?? ""] ?? {ratings:{}};
+                return [lessonId,
+                    {
+                        lesson: lesson,
+                        ratings: studentLesson.ratings
+                    }
+                ]
+            })
     );
 
     const dataSets:ChartDataset<"line",number[]>[] = Object.entries(account.ratingTypes).map(([ratingTypeId,ratingType])=>{
@@ -37,7 +41,7 @@ export default function StudentPage(){
             data: Object.entries(studentLessons).map(([lessonId,lessonData])=>lessonData.ratings[ratingTypeId] ?? 0),
             fill: false,
             tension: 0.1,
-            borderColor: 'rgb(75, 192, 192)',
+            borderColor: `hsl(${ratingType.color[0]}, ${ratingType.color[1]*100}%, ${ratingType.color[2]*100}%)`,
         };
     });
     
@@ -49,6 +53,7 @@ export default function StudentPage(){
 
     return(
         <div className="page">
+            <Menu></Menu>
             <h1>{student.name} ({course.label})</h1>
             <div style={{width:"60vw"}}>
                 <Line data={data}></Line>

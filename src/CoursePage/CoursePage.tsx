@@ -10,7 +10,9 @@ import Lesson from "../_types/Lesson";
 import StudentLesson from "../_types/StudentLesson";
 
 import '../_ui/List.css';
+import '../_ui/Page.css';
 import LessonEntry from "./LessonEntry";
+import { md5 } from "../_helpers/md5";
 
 export default function CoursePage(){
 	let {courseId} = useParams();
@@ -71,7 +73,7 @@ export default function CoursePage(){
 
 		const newStudent = new Student();
 		newStudent.name = newStudentLabel;
-		const newStudentId = newStudentLabel;
+		const newStudentId = md5(newStudentLabel+(Date.now()).toString());
 		newStudent.id = newStudentId;
 
 		const accountUpdate:{[key:string]:any} = {courses:{}};
@@ -105,6 +107,9 @@ export default function CoursePage(){
 
 	return(
 		<div className="page">
+			<div className="MenuBar">
+            	<Link to={"/"}>Startseite</Link>
+			</div>
 			<h1>{courseToDisplay?.label}</h1>
 			<Link to="layout">Sitzplan</Link>
 			<button onClick={startLesson}>Unterricht starten</button>

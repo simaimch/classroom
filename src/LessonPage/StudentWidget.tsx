@@ -31,8 +31,7 @@ export default function StudentWidget(
 
     const style:React.CSSProperties = {
         gridColumn: sitzplatzX,
-        gridRow: sitzplatzY,
-        color: 'red'
+        gridRow: sitzplatzY
     }
 
     const classes = ["student"];

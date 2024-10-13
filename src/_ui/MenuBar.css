@@ -1,0 +1,26 @@
+.MenuBar{
+	display: flex;
+	background: #111;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	z-index: 10000;
+}
+
+.MenuBar a,
+.MenuBar button{
+	color: #eee;
+	text-decoration: none;
+	padding: 0.2em 0.7em;
+	background: #555;
+	position: relative;
+	border: 2px solid #333;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.MenuBar a:hover,
+.MenuBar button:hover{
+	background: #999;
+	color: #111
+}

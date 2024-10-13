@@ -2,22 +2,23 @@
     display: contents;
 }
 
-.page.lesson h1{
+.lesson h1{
     display: none;
 }
 
-.page.lesson .ratings{
+.lesson .ratings{
     grid-area: ratings;
 }
 
-.page.lesson .students{
+.lesson .students{
     display: grid;
     grid-template-columns: repeat(var(--columnCount), 1fr);
     grid-template-rows: repeat(var(--rowCount), 1fr);
     grid-area: students;
+    grid-gap: 0.1em;
 }
 
-.page.lesson{
+.lesson{
     display: grid;
     grid-template-rows: 2em 1fr;
     grid-template-columns: 1fr 20vw;
@@ -25,7 +26,7 @@
     grid-template-areas: "menu menu" "students ratings";
 }
 
-.page.lesson .MenuBar{
+.lesson .MenuBar{
     grid-area: menu;
 }
 
