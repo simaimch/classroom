@@ -42,7 +42,11 @@ export default function CoursePage(){
 			([id, student]) => 
 			{
 				return  <li key={id} className="entry">
-							<StudentEntry student={student} deleteFunction={()=>{deleteStudent(id)}}></StudentEntry>
+							<StudentEntry 
+								student={student} 
+								deleteFunction={()=>{deleteStudent(id)}}
+								selectFunction={()=>{navigate(`student/${id}`)}}
+							></StudentEntry>
 						</li>
 			}
 		)

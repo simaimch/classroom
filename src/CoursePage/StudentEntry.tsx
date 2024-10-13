@@ -5,17 +5,19 @@ export default function StudentEntry(
     {
         student,
         deleteFunction,
+        selectFunction,
     }
     :
     {
         student:Student,
         deleteFunction: ()=>any,
+        selectFunction: ()=>any,
     }
 ){
     const [deleteStep, setDeleteStep] = useState<number>(0);
 
     return (
-        <>
+        <div onClick={(e)=>{selectFunction()}}>
             <span className="label">{student.name}</span>
             {
 				deleteStep === 0
@@ -34,6 +36,6 @@ export default function StudentEntry(
 					e.stopPropagation();
 				}}>Löschen bestätigen</button>
 			}
-        </>
+        </div>
     );
 }

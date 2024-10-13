@@ -9,6 +9,7 @@ import useLocalStorage from './_helpers/useLocalStorage';
 import CoursePage from './CoursePage/CoursePage';
 import LayoutPage from './LayoutPage/LayoutPage';
 import LessonPage from './LessonPage/LessonPage';
+import StudentPage from './StudentPage/StudentPage';
 
 //#region Account
 	const emptyAccount = new Account();
@@ -35,6 +36,9 @@ function App() {
 								<Route path="layout" element={<LayoutPage></LayoutPage>}></Route>
 								<Route path="lesson">
 									<Route path=":lessonId" element={<LessonPage></LessonPage>}></Route>
+								</Route>
+								<Route path="student">
+									<Route path=":studentId" element={<StudentPage></StudentPage>}></Route>
 								</Route>
 							</Route>
 						</Route>	
