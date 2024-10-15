@@ -5,20 +5,18 @@ export default function CourseEntry(
 	{
 		course,
 		deleteFunction,
-		selectFunction,
 	}
 	:
 	{
 		course: Course,
 		deleteFunction: ()=>any,
-		selectFunction: ()=>any,
 	}
 ){
 
 	const [deleteStep, setDeleteStep] = useState<number>(0);
 
 	return (
-		<div onClick={(e)=>{selectFunction()}}>
+		<div>
 			<span className="label">{course.label}</span>
 			{
 				deleteStep === 0

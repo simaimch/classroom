@@ -21,11 +21,10 @@ export default function IndexPage(){
 
 	const coursesList = Object.entries(account?.courses ?? {}).map(
 		([id, course]) => {
-			return  <li className="entry" key={id}>
+			return  <li className="entry" key={id} onClick={()=>{navigate(`course/${id}`)}}>
 						<CourseEntry 
 							course={course} 
-							deleteFunction={()=>{deleteCourse(id);}} 
-							selectFunction={()=>{navigate(`course/${id}`)}}></CourseEntry>
+							deleteFunction={()=>{deleteCourse(id);}} ></CourseEntry>
 					</li>
 		}
 	)

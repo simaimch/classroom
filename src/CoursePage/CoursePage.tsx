@@ -43,11 +43,10 @@ export default function CoursePage(){
 		.map(
 			([id, student]) => 
 			{
-				return  <li key={id} className="entry">
+				return  <li key={id} className="entry" onClick={()=>{navigate(`student/${id}`)}}>
 							<StudentEntry 
 								student={student} 
 								deleteFunction={()=>{deleteStudent(id)}}
-								selectFunction={()=>{navigate(`student/${id}`)}}
 							></StudentEntry>
 						</li>
 			}
