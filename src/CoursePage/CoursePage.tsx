@@ -25,16 +25,43 @@ export default function CoursePage(){
 	const [newStudentLabel, setNewStudentLabel] = useState<string>("");
 	const [newStudentLabelErrorMessage, setNewStudentLabelErrorMessage] = useState<string>('');
 
-	const lessonsList = Object.entries(courseToDisplay?.lessons ?? {})
-		.map(
+	function dateToTimeAgoCategory(date:Date){
+		const day = Math.floor(date.getTime() / 86400000);
+		const dayToday = Math.floor(Date.now() / 86400000);
+
+		const daysDifference = dayToday - day;
+		if(daysDifference === 0)
+			return "Heute";
+		if(daysDifference === 1)
+			return "Gestern";
+		
+		const mondayOfDay = new Date((date.getTime() / 86400000 - (date.getDay() ?? 7) + 1) * 86400000);
+		const sundayOfDay = new Date(mondayOfDay.getTime() + 518400000);
+
+		return `${mondayOfDay.toLocaleDateString()} - ${sundayOfDay.toLocaleDateString()}`;
+	}
+
+	let lastTimeAgoCategory = "";
+
+	const lessonsEntries:JSX.Element[] = [];
+
+	Object.entries(courseToDisplay?.lessons ?? {})
+		.sort(([lidA,lessonA],[lidB,lessonB])=>lessonB.timeStart-lessonA.timeStart)
+		.forEach(
 			([id,lesson]) =>
 			{
-				return	<li className="entry" key={id} onClick={(e)=>{navigate(`lesson/${id}`)}}>
-							<LessonEntry lesson={lesson} deleteFunction={function () {
-						throw new Error("Function not implemented.");
-					} }>{id}</LessonEntry>
+				let timeAgoDOM = <></>;
+				const timeAgoCategory = dateToTimeAgoCategory(new Date(lesson.timeStart));
+				if(timeAgoCategory !== lastTimeAgoCategory){
+					lastTimeAgoCategory = timeAgoCategory;
+					lessonsEntries.push(<li className="header" key={lastTimeAgoCategory}><div className="label">{lastTimeAgoCategory}</div></li>);
+				}
+				lessonsEntries.push(
+						<li className="entry" key={id} onClick={(e)=>{navigate(`lesson/${id}`)}}>
+							<LessonEntry lesson={lesson} deleteFunction={()=>deleteLesson(id)}></LessonEntry>
 							
-						</li>
+						</li>);
+
 			}
 		);
 
@@ -51,6 +78,15 @@ export default function CoursePage(){
 						</li>
 			}
 		)
+
+	function deleteLesson(lessonId:string){
+		if(!courseToDisplay || !courseId)
+			return;
+
+		const accountUpdate:{[key:string]:any} = {courses:{[courseId]:{lessons:{[lessonId]:null}}}};
+
+		SetAccount(updateObject<Account>(account,accountUpdate));
+	}
 
 	function deleteStudent(studentId:string){
 		if(!courseToDisplay)
@@ -87,8 +123,9 @@ export default function CoursePage(){
 	function startLesson(){
 		if(!courseToDisplay)
 			return;
-		const newLessonId = `${Object.keys(courseToDisplay.lessons).length}`;
+		const newLessonId = md5(Object.keys(courseToDisplay.lessons).length+(Date.now()).toString());
 		const newLesson = new Lesson();
+		newLesson.timeStart = Date.now();
 		for(const [studentId, student] of Object.entries(courseToDisplay.students)){
 			const studentOfLesson:StudentLesson = {...student, ratings: {}};
 			newLesson.students[studentId] = studentOfLesson;
@@ -110,7 +147,6 @@ export default function CoursePage(){
             	<Link to={"/"}>Startseite</Link>
 			</div>
 			<h1>{courseToDisplay?.label}</h1>
-			<Link to="layout">Sitzplan</Link>
 			<button onClick={startLesson}>Unterricht starten</button>
 			<h2>Schüler</h2>
 			<ul className="List">
@@ -126,7 +162,7 @@ export default function CoursePage(){
 			}
 
 			<h2>Unterrichtseinheiten</h2>
-			<ul className="List">{lessonsList}</ul>
+			<ul className="List">{lessonsEntries}</ul>
 		</div>
 	);
 }

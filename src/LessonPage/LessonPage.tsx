@@ -4,7 +4,6 @@ import { AccountContext } from "../_contexts/AccountContext";
 import "./LessonPage.css";
 import StudentWidget from "./StudentWidget";
 import MenuBar from "./MenuBar";
-import Lesson from "../_types/Lesson";
 import StudentLesson from "../_types/StudentLesson";
 import Account from "../_types/Account";
 import updateObject from "../_helpers/updateObject";
@@ -63,7 +62,7 @@ export default function LessonPage(){
 				throw new Error("Account unset");
 			const targetPosition = [student.sitzplatz[0]+deltaX,student.sitzplatz[1]+deltaY];
 			const studentAtTargetPosition = studentByPosition(targetPosition[0],targetPosition[1]);
-			const updateLesson:Lesson = {students:{}};
+			const updateLesson:{[key:string]:any} = {students:{}};
 
 			const updateSutdent:StudentLesson = {...student};
 			updateSutdent.sitzplatz = targetPosition;

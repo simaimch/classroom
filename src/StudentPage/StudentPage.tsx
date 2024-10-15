@@ -46,7 +46,7 @@ export default function StudentPage(){
     });
     
     const data:ChartData<"line",number[],string> = {
-        labels: Object.entries(studentLessons).map(([lessonId,lessonData])=>lessonId),
+        
         datasets: dataSets,
     }
 
@@ -56,7 +56,16 @@ export default function StudentPage(){
             <Menu></Menu>
             <h1>{student.name} ({course.label})</h1>
             <div style={{width:"60vw"}}>
-                <Line data={data}></Line>
+                <Line data={data} options={{
+                    scales:{
+                        xAxes:{
+                            labels: Object.entries(studentLessons).map(([lessonId,lessonData])=>new Date(lessonData.lesson.timeStart).toLocaleString()),
+                            ticks:{
+                                autoSkip:false,maxRotation:45,minRotation:45
+                            }
+                        }
+                    }
+                }}></Line>
             </div>
         </div>
     );

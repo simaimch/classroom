@@ -1,16 +1,13 @@
 import { useState } from "react";
-import Student from "../_types/Student";
 import Lesson from "../_types/Lesson";
 
 export default function LessonEntry(
     {
-        children,
         lesson,
         deleteFunction,
     }
     :
     {
-        children: any,
         lesson:Lesson,
         deleteFunction: ()=>any,
     }
@@ -19,7 +16,7 @@ export default function LessonEntry(
 
     return(
         <>
-            <span className="label">{children}</span>
+            <span className="label">{new Date(lesson.timeStart).toLocaleString()}</span>
             {
 				deleteStep === 0
 				&&

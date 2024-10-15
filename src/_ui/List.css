@@ -25,3 +25,12 @@
 .List .entry:hover {
     background: #333;
 }
+
+.List .header {
+    list-style: none;
+    background: #444;
+    color: #eee;
+    padding: 1em;
+    position: relative;
+    cursor: pointer;
+}

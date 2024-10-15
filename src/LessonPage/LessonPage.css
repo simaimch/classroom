@@ -24,6 +24,7 @@
     grid-template-columns: 1fr 20vw;
     height: 100vh;
     grid-template-areas: "menu menu" "students ratings";
+    overflow: clip;
 }
 
 .lesson .MenuBar{

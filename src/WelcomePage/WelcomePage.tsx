@@ -1,10 +1,5 @@
-import { useContext } from 'react';
-import updateObject from '../_helpers/updateObject';
-import { SetAccount } from '../App';
 import logo from './Logo.png';
 import './WelcomePage.css';
-import { AccountContext } from '../_contexts/AccountContext';
-import { useNavigate } from 'react-router-dom';
 
 export default function WelcomePage(
     {start}
@@ -58,7 +53,7 @@ export default function WelcomePage(
                 <button onClick={start}>Ich verstehe, dass ich diese Seite/Anwendung auf eigene Gefahr nutze.</button>
             </p>
 
-            <img id="logo" src={logo}/>
+            <img id="logo" src={logo} alt='Logo of Edufant'/>
             <p>Christian Hoffmann, Edufant 2024</p>
         </div>
         
