@@ -6,6 +6,7 @@ export default function Menu(){
 
     return(
         <div className="MenuBar">
+            <Link to={"/"}>Startseite</Link>
             <Link to={`/course/${courseId}`}>Klassenübersicht</Link>
         </div>
     );
