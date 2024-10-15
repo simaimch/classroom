@@ -3,6 +3,8 @@ import RatingType from "./RatingType";
 
 export default class Account{
     
+    initialized:boolean = false;
+
     courses: {[courseId:string]:Course} = {};
 
     ratingTypes: {[typeId:string]: RatingType} = {

@@ -10,6 +10,8 @@ import CoursePage from './CoursePage/CoursePage';
 import LayoutPage from './LayoutPage/LayoutPage';
 import LessonPage from './LessonPage/LessonPage';
 import StudentPage from './StudentPage/StudentPage';
+import WelcomePage from './WelcomePage/WelcomePage';
+import updateObject from './_helpers/updateObject';
 
 //#region Account
 	const emptyAccount = new Account();
@@ -24,7 +26,17 @@ function App() {
 
 	[account, setAccount] = useLocalStorage<Account>('account',emptyAccount);
 
+
+    function acknowledge(){
+        if(!account) return;
+        SetAccount(updateObject(account,{initialized:true}));
+    }
+
 	return (
+		(
+			!account.initialized ? 
+				<WelcomePage start={acknowledge}></WelcomePage>
+			:
 		<AccountContext.Provider value={account}>
 			<HashRouter>
 				<Routes>
@@ -46,6 +58,7 @@ function App() {
 				</Routes>
 			</HashRouter>
 		</AccountContext.Provider>
+		)
 	);
 
 }
