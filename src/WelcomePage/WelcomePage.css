@@ -16,3 +16,13 @@ code{
         width: calc((100% - max(50%, 800px)) / 2 - 20px);
     }
 }
+
+@media (orientation: portrait) {
+    #welcomePage {
+        padding: 0 1em;
+    }
+
+    #logo {
+        width: 100%;
+    }
+}
