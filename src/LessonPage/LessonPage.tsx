@@ -3,12 +3,13 @@ import { useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import "./LessonPage.css";
 import StudentWidget from "./StudentWidget";
-import MenuBar from "./MenuBar";
+import MenuBar from "./LessonMenuBar";
 import StudentLesson from "../_types/StudentLesson";
 import Account from "../_types/Account";
 import updateObject from "../_helpers/updateObject";
 import { SetAccount } from "../App";
 import RatingWidget from "./RatingWidget";
+import LessonMenuBar from "./LessonMenuBar";
 
 export default function LessonPage(){
     let {courseId, lessonId} = useParams();
@@ -143,11 +144,11 @@ export default function LessonPage(){
     return(
         <div className="lesson">
             <h1>{courseToDisplay?.label}, Unterricht {lessonId}</h1>
-            <MenuBar 
+            <LessonMenuBar 
 				editMode={editMode} 
 				setEditMode={setEditMode} 
 				saveLayout={saveLayout}
-                undoFunction={undo}></MenuBar>
+                undoFunction={undo}></LessonMenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
             </div>

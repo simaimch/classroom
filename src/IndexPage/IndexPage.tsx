@@ -9,6 +9,7 @@ import CourseEntry from "./CourseEntry";
 import './IndexPage.css';
 import '../_ui/List.css';
 import { useNavigate } from "react-router-dom";
+import MenuBar from "../_ui/MenuBar";
 
 export default function IndexPage(){
 
@@ -72,6 +73,7 @@ export default function IndexPage(){
 
 	return (
 		<div className="page" id="indexPage">
+			<MenuBar><></></MenuBar>
 			<h1>Classrooms</h1>
 			<h2>Klassen</h2>
 			<ul id="coursesList" className="List">

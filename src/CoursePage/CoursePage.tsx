@@ -13,6 +13,7 @@ import '../_ui/List.css';
 import '../_ui/Page.css';
 import LessonEntry from "./LessonEntry";
 import { md5 } from "../_helpers/md5";
+import MenuBar from "../_ui/MenuBar";
 
 export default function CoursePage(){
 	let {courseId} = useParams();
@@ -143,9 +144,9 @@ export default function CoursePage(){
 
 	return(
 		<div className="page">
-			<div className="MenuBar">
+			<MenuBar>
             	<Link to={"/"}>Startseite</Link>
-			</div>
+			</MenuBar>
 			<h1>{courseToDisplay?.label}</h1>
 			<button onClick={startLesson}>Unterricht starten</button>
 			<h2>Schüler</h2>

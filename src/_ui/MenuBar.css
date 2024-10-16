@@ -24,3 +24,12 @@
 	background: #999;
 	color: #111
 }
+
+.MenuBar .rightAligned
+{
+	margin-left: auto;
+}
+
+.MenuBar .rightAligned ~.rightAligned {
+	margin-left: initial;
+}

@@ -12,6 +12,7 @@ import LessonPage from './LessonPage/LessonPage';
 import StudentPage from './StudentPage/StudentPage';
 import WelcomePage from './WelcomePage/WelcomePage';
 import updateObject from './_helpers/updateObject';
+import AboutPage from './About/AboutPage';
 
 //#region Account
 	const emptyAccount = new Account();
@@ -42,6 +43,7 @@ function App() {
 				<Routes>
 					<Route path="/">
 						<Route index element={<IndexPage></IndexPage>} />
+						<Route path="about" element={<AboutPage></AboutPage>}></Route>
 						<Route path="course">
 							<Route path=":courseId">
 								<Route index element={<CoursePage></CoursePage>}></Route>

@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
 import '../_ui/MenuBar.css';
+import MenuBar from '../_ui/MenuBar';
 
-export default function MenuBar(
+export default function LessonMenuBar(
     {
         editMode,
         setEditMode,
@@ -21,13 +22,13 @@ export default function MenuBar(
         <button onClick={()=>setEditMode(true)}>Bearbeiten</button>;
 
     return(
-        <div className="MenuBar">
+        <MenuBar>
             <Link to={"/"}>Startseite</Link>
             <Link to={`/course/${courseId}`}>Klassenübersicht</Link>
             {editButton}
             <button onClick={saveLayout}>Sitzplan für alle Unterrichte speichern</button>
             <button onClick={undoFunction}>Rückgängig</button>
             
-        </div>
+        </MenuBar>
     );
 }
