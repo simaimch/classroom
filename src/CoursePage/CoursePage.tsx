@@ -17,7 +17,7 @@ import MenuBar from "../_ui/MenuBar";
 
 export default function CoursePage(){
 	let {courseId} = useParams();
-	const account = useContext(AccountContext);
+	let account = useContext(AccountContext);
 
 	const navigate = useNavigate();
 
@@ -81,7 +81,7 @@ export default function CoursePage(){
 		)
 
 	function deleteLesson(lessonId:string){
-		if(!courseToDisplay || !courseId)
+		if(!courseToDisplay || !courseId || !account)
 			return;
 
 		const accountUpdate:{[key:string]:any} = {courses:{[courseId]:{lessons:{[lessonId]:null}}}};
@@ -90,7 +90,7 @@ export default function CoursePage(){
 	}
 
 	function deleteStudent(studentId:string){
-		if(!courseToDisplay)
+		if(!courseToDisplay || !account)
 			return;
 
 		const accountUpdate:{[key:string]:any} = {courses:{}};
@@ -103,26 +103,33 @@ export default function CoursePage(){
 
 	function newStudent(){
 		
+		const newStudentLabels = newStudentLabel.split(';').map(rawLabel=>rawLabel.trim());
+		for(const newStudentLabel of newStudentLabels)
+			addStudent(newStudentLabel);
+		
+	}
 
-		if(!courseToDisplay)
+	function addStudent(studentLabel:string){
+		if(!courseToDisplay || !studentLabel || !account)
 			return;
 
 		const newStudent = new Student();
-		newStudent.name = newStudentLabel;
-		const newStudentId = md5(newStudentLabel+(Date.now()).toString());
+		newStudent.name = studentLabel;
+		const newStudentId = md5(studentLabel+(Date.now()).toString());
 		newStudent.id = newStudentId;
 
 		const accountUpdate:{[key:string]:any} = {courses:{}};
 		const courseUpdate:{[key:string]:any} = {students:{}};
 		accountUpdate.courses[courseId ?? ""] = courseUpdate;
 		courseUpdate.students[newStudentId] = newStudent;
-
-		SetAccount(updateObject<Account>(account,accountUpdate));
 		
+		account = updateObject<Account>(account,accountUpdate);
+		SetAccount(account);
+
 	}
 
 	function startLesson(){
-		if(!courseToDisplay)
+		if(!courseToDisplay || !account)
 			return;
 		const newLessonId = md5(Object.keys(courseToDisplay.lessons).length+(Date.now()).toString());
 		const newLesson = new Lesson();
@@ -155,7 +162,7 @@ export default function CoursePage(){
 			</ul>
 			Neuer Schüler:
 			<input type="text" id="newStudentName" defaultValue={""} placeholder="Schüler Name" onChange={(e)=>{setNewStudentLabel(e.target.value); setNewStudentLabelErrorMessage("")}}></input>
-			<button onClick={newStudent}>erstellen</button>
+			<button onClick={newStudent}>erstellen</button> (mit <code>;</code> trennen, um mehrere Schüler hinzuzufügen)
 			{
 				newStudentLabelErrorMessage && (
 					<div className="error">{newStudentLabelErrorMessage}</div>
