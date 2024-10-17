@@ -5,12 +5,16 @@ import { Line } from "react-chartjs-2";
 import { CategoryScale, Chart, ChartData, ChartDataset, Legend, LineElement, LinearScale, PointElement, Tooltip } from "chart.js";
 import Menu from "./Menu";
 import '../_ui/List.css';
+import { SetAccount } from "../App";
+import updateObject from "../_helpers/updateObject";
+import Account from "../_types/Account";
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Legend, Tooltip);
 
 export default function StudentPage(){
     let {courseId, studentId} = useParams();
 	const account = useContext(AccountContext);
+    const [rename,setRename] = useState<string>("");
 
     if(!account)
         return (<>Account connection failed</>);
@@ -50,11 +54,21 @@ export default function StudentPage(){
         datasets: dataSets,
     }
 
+    function renameFunction(newName:string){
+        if(!courseId || !studentId || !account)
+            return;
+        const updateAccount = {courses:{[courseId]:{students:{[studentId]:{name:newName}}}}};
+        SetAccount(updateObject<Account>(account,updateAccount));
+    }
 
     return(
         <div className="page">
             <Menu></Menu>
             <h1>{student.name} ({course.label})</h1>
+            <div>
+                <input defaultValue={student.name} onChange={(e)=>{setRename(e.target.value)}}></input>
+                <button onClick={()=>{renameFunction(rename)}}>Umbenennen</button>
+            </div>
             <div style={{width:"60vw"}}>
                 <Line data={data} options={{
                     scales:{
