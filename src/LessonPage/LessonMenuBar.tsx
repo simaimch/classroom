@@ -15,7 +15,7 @@ export default function LessonMenuBar(
         undoFunction: ()=>any,
     }){
 
-    let {courseId, lessonId} = useParams();
+    let {courseId} = useParams();
 
     const editButton = editMode ? 
         <button onClick={()=>setEditMode(false)}>Bearbeiten beenden</button> : 

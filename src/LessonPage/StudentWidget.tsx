@@ -5,6 +5,7 @@ import StudentMoveOverlay from "./StudentMoveOverlay";
 
 import './StudentWidget.css';
 import { AccountContext } from "../_contexts/AccountContext";
+import StudentLabel from "../_ui/StudentLabel";
 
 export default function StudentWidget(
     {
@@ -59,7 +60,7 @@ export default function StudentWidget(
                     <div className="addRatingOverlay" onClick={addRatingFunction}></div>
                 </>
             }
-            <span className="studentName">{student.name}</span>
+            <StudentLabel student={student}/>
         </div>
     );
 }

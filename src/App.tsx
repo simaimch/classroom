@@ -13,6 +13,8 @@ import StudentPage from './StudentPage/StudentPage';
 import WelcomePage from './WelcomePage/WelcomePage';
 import updateObject from './_helpers/updateObject';
 import AboutPage from './About/AboutPage';
+import PreferencesPage from './PreferencesPage/PreferencesPage';
+import updateVersion, { CurrentVersion } from './_versioning/updateVersion';
 
 //#region Account
 	const emptyAccount = new Account();
@@ -26,7 +28,11 @@ import AboutPage from './About/AboutPage';
 function App() {
 
 	[account, setAccount] = useLocalStorage<Account>('account',emptyAccount);
+	if(account.version !== CurrentVersion)
+		setAccount(updateVersion(account));
 
+	if(!account.version)
+		console.warn("Account version not set");
 
     function acknowledge(){
         if(!account) return;
@@ -56,6 +62,7 @@ function App() {
 								</Route>
 							</Route>
 						</Route>	
+						<Route path="preferences" element={<PreferencesPage></PreferencesPage>}></Route>
 					</Route>
 				</Routes>
 			</HashRouter>

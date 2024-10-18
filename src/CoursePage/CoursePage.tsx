@@ -51,7 +51,6 @@ export default function CoursePage(){
 		.forEach(
 			([id,lesson]) =>
 			{
-				let timeAgoDOM = <></>;
 				const timeAgoCategory = dateToTimeAgoCategory(new Date(lesson.timeStart));
 				if(timeAgoCategory !== lastTimeAgoCategory){
 					lastTimeAgoCategory = timeAgoCategory;

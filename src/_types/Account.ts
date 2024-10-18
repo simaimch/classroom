@@ -1,3 +1,4 @@
+import { CurrentVersion } from "../_versioning/updateVersion";
 import Course from "./Course";
 import RatingType from "./RatingType";
 
@@ -13,4 +14,12 @@ export default class Account{
         "Unachtsamkeit":{label: 'Unachtsam.', points: -0.5,		color: [  0, 1, 0.35]},
         "Störung":{label: 'Störung', points: -3,				color: [  0, 1, 0.55]},
     };
+
+	version: number = CurrentVersion;
+
+	preferences: {
+		studentLabeling: string
+	} = {
+		studentLabeling: ""
+	};
 }

@@ -6,6 +6,7 @@ export default function MenuBar(
     return(
         <div className="MenuBar">
             {children}
+            <Link to="/preferences" className="rightAligned">Einstellungen</Link>
             <Link to="/about" className="rightAligned">About</Link>
         </div>
     );

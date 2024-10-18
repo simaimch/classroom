@@ -8,6 +8,7 @@ import '../_ui/List.css';
 import { SetAccount } from "../App";
 import updateObject from "../_helpers/updateObject";
 import Account from "../_types/Account";
+import StudentLabel from "../_ui/StudentLabel";
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Legend, Tooltip);
 
@@ -64,7 +65,7 @@ export default function StudentPage(){
     return(
         <div className="page">
             <Menu></Menu>
-            <h1>{student.name} ({course.label})</h1>
+            <h1><StudentLabel student={student}></StudentLabel> ({course.label})</h1>
             <div>
                 <input defaultValue={student.name} onChange={(e)=>{setRename(e.target.value)}}></input>
                 <button onClick={()=>{renameFunction(rename)}}>Umbenennen</button>
