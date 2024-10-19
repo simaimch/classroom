@@ -8,11 +8,35 @@ import updateObject from "../_helpers/updateObject";
 import Account from "../_types/Account";
 
 import './PreferencesPage.css';
+import RatingEntry from "./RatingEntry";
+import { md5 } from "../_helpers/md5";
+import RatingType from "../_types/RatingType";
 
 export default function PreferencesPage(){
     
 	const account = useContext(AccountContext);
 
+    const ratingEntries = Object.entries(account?.ratingTypes ?? {}).map(
+        ([ratingId, ratingType])=>{
+            return <RatingEntry key={ratingId} ratingId={ratingId} ratingType={ratingType}></RatingEntry>;
+        }
+    );
+
+    function addRatingType(){
+        const id = md5(Date.now()+"RT");
+        if(!account)
+            return;
+        const updateAccount = {
+            ratingTypes:{
+                [id]:new RatingType()
+            }
+        };
+
+        SetAccount(updateObject<Account>(account, updateAccount));
+    }
+
+
+    //#region StudentLabeling
     const [studentLabelExample, setStudentLabelExample] = useState<string>("Musterschüler, Hannah Maximilian (Hama)");
 
     const studentLabelingOptions:{
@@ -26,7 +50,7 @@ export default function PreferencesPage(){
             description: 'Den vollen Namen des Schülers darstellen.'
         },
         {
-            label: 'Spitzname, 1ster Vorname',
+            label: 'Spitzname, 1ster Vorname [Nachname, Vornamen (Spitzname)]',
             value: 'nick',
             description: 'Den Spitznamen des Schülers darstellen. Dieser ist in Klammern aufgeführt. Falls kein Spitzname vorhanden ist, wird der erste Vorname des Schülers verwendet.'
         }
@@ -49,6 +73,7 @@ export default function PreferencesPage(){
             </div>
         );
     });
+    //#endregion
     
     return (
         <div className="page">
@@ -56,7 +81,12 @@ export default function PreferencesPage(){
                 <Link to={"/"}>Startseite</Link>
             </MenuBar>
             <h1>Einstellungen</h1>
-            <h2></h2>
+            <details>
+                <summary>Bewertungsoptionen</summary>
+                <p>Die Farben sind in HSL angegeben (<a href="https://www.w3schools.com/colors/colors_hsl.asp">Hilfs-Werkzeug</a>)</p>
+                {ratingEntries}
+                <button onClick={addRatingType}>Neue Bewertungsoption</button>
+            </details>
             <details>
                 <summary>Schüler-Namen-Anzeige</summary>
                 <p>Beispiel-Name: <input defaultValue={studentLabelExample} onChange={(e)=>setStudentLabelExample(e.target.value)}></input></p>

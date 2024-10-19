@@ -9,6 +9,7 @@ import { SetAccount } from "../App";
 import updateObject from "../_helpers/updateObject";
 import Account from "../_types/Account";
 import StudentLabel from "../_ui/StudentLabel";
+import arrayToHSL from "../_ui/arrayToHSL";
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Legend, Tooltip);
 
@@ -46,7 +47,7 @@ export default function StudentPage(){
             data: Object.entries(studentLessons).map(([lessonId,lessonData])=>lessonData.ratings[ratingTypeId] ?? 0),
             fill: false,
             tension: 0.1,
-            borderColor: `hsl(${ratingType.color[0]}, ${ratingType.color[1]*100}%, ${ratingType.color[2]*100}%)`,
+            borderColor: arrayToHSL(ratingType.color),
         };
     });
     

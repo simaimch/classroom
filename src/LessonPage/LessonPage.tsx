@@ -11,6 +11,7 @@ import { SetAccount } from "../App";
 import RatingWidget from "./RatingWidget";
 import LessonMenuBar from "./LessonMenuBar";
 import { EditHistoryEntry } from "../_types/Lesson";
+import arrayToHSL from "../_ui/arrayToHSL";
 
 export default function LessonPage(){
     let {courseId, lessonId} = useParams();
@@ -211,7 +212,7 @@ export default function LessonPage(){
 
     const ratings = Object.entries(account.ratingTypes).map(([id,ratingType])=>{
         const style = {
-            background: `hsl(${ratingType.color[0]}, ${ratingType.color[1]*100}%, ${ratingType.color[2]*100}%)`,
+            background: arrayToHSL(ratingType.color),
             color:ratingType.color[2] >= 0.35 ? 'black' : 'white',
         };
         return (

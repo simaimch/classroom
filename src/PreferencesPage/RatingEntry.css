@@ -1,0 +1,7 @@
+.ratingType .previewColor{
+    display: inline-block;
+    width: 5em;
+    height: 1em;
+}
+
+.ratingTypeId{display: none;}
