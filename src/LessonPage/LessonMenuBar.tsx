@@ -12,7 +12,7 @@ export default function LessonMenuBar(
         editMode: boolean,
         setEditMode: (editMode:boolean)=>any,
         saveLayout: ()=>any,
-        undoFunction: ()=>any,
+        undoFunction: (()=>any) | null,
     }){
 
     let {courseId} = useParams();
@@ -27,8 +27,9 @@ export default function LessonMenuBar(
             <Link to={`/course/${courseId}`}>Klassenübersicht</Link>
             {editButton}
             <button onClick={saveLayout}>Sitzplan für alle Unterrichte speichern</button>
-            <button onClick={undoFunction}>Rückgängig</button>
-            
+            {
+                undoFunction && <button onClick={undoFunction}>Rückgängig</button>
+            }
         </MenuBar>
     );
 }

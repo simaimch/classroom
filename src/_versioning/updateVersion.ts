@@ -1,6 +1,6 @@
 import Account from "../_types/Account";
 
-export const CurrentVersion = 2;
+export const CurrentVersion = 3;
 
 export default function updateVersion(account:Account):Account{
     if(account.version === CurrentVersion)
@@ -14,7 +14,9 @@ export default function updateVersion(account:Account):Account{
         updatedAccount = {...updatedAccount, version: 1};
     if(account.version === 1)
         updatedAccount = {...updatedAccount, version: 2, preferences:{studentLabeling:""}};
-    
+    if(account.version === 2){
+        updatedAccount = {...updatedAccount, version: 3};
+    }
 
     return updatedAccount;
 }

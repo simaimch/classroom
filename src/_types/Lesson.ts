@@ -7,4 +7,17 @@ export default class Lesson{
     
     timeStart: number = 0;
     timeEnd: number= Number.MAX_SAFE_INTEGER;
+
+    editHistory?:{[key:string]: EditHistoryEntry} = {};
 }
+
+export type EditHistoryEntry = {
+    time: number,
+    operations: {[key:string]: EditHistoryOperation};
+};
+
+export type EditHistoryOperation = {
+    studentId: string;
+    previousPosition?: number[];
+    previousRatings?: {[ratingId:string]:number};
+};

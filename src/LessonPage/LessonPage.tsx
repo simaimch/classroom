@@ -10,6 +10,7 @@ import updateObject from "../_helpers/updateObject";
 import { SetAccount } from "../App";
 import RatingWidget from "./RatingWidget";
 import LessonMenuBar from "./LessonMenuBar";
+import { EditHistoryEntry } from "../_types/Lesson";
 
 export default function LessonPage(){
     let {courseId, lessonId} = useParams();
@@ -52,7 +53,35 @@ export default function LessonPage(){
         if(!account || !courseId || !lessonId)
             return;
 
-        const updateCourse:{[key:string]:any} = {lessons:{[lessonId]:{students:{[student.id]:{ratings:{[ratingId]:targetValue}}}}}};
+        const currentValue = student.ratings[ratingId] ?? 0;
+        const newEditHistoryEntry: EditHistoryEntry = {
+            time: Date.now(),
+            operations:{
+                "0":{
+                    studentId: student.id,
+                    previousRatings:{
+                        [ratingId]: currentValue
+                    }
+                }
+            }
+        };
+
+        const updateCourse:{[key:string]:any} = {
+            lessons:{
+                [lessonId]:{
+                    students:{
+                        [student.id]:{
+                            ratings:{
+                                [ratingId]:targetValue
+                            }
+                        }
+                    },
+                    editHistory:{
+                        [Object.keys(lessonToDisplay.editHistory ?? {}).length]:newEditHistoryEntry
+                    }
+                }
+            }
+        };
         const updateAccount:{[key:string]:any} = {courses:{[courseId]: updateCourse}};
         SetAccount(updateObject<Account>(account,updateAccount));
     }
@@ -61,25 +90,56 @@ export default function LessonPage(){
         return function(deltaX:number,deltaY:number){
 			if(!account)
 				throw new Error("Account unset");
-			const targetPosition = [student.sitzplatz[0]+deltaX,student.sitzplatz[1]+deltaY];
+			const targetPosition = [
+                Math.max(1,student.sitzplatz[0]+deltaX),
+                Math.max(1,student.sitzplatz[1]+deltaY)
+            ];
 			const studentAtTargetPosition = studentByPosition(targetPosition[0],targetPosition[1]);
+            
+            const editHistory = (lessonToDisplay.editHistory) ?? {};
 			const updateLesson:{[key:string]:any} = {students:{}};
 
 			const updateSutdent:StudentLesson = {...student};
 			updateSutdent.sitzplatz = targetPosition;
 
 			updateLesson.students[updateSutdent.id] = updateSutdent;
+            
+            const editHistoryId = Object.keys(editHistory).length + "";
+            editHistory[editHistoryId] = {
+                time: Date.now(),
+                operations: {
+                    '0':{
+                        studentId: student.id,
+                        previousPosition: student.sitzplatz
+                    }
+                }
+            }
 
 			if(studentAtTargetPosition){
 				const updateStudentAtTarget:StudentLesson = {...studentAtTargetPosition, sitzplatz: student.sitzplatz};
 				updateLesson.students[updateStudentAtTarget.id] = updateStudentAtTarget;
+                editHistory[editHistoryId] = {
+                    time: Date.now(),
+                    operations: {
+                        '1':{
+                            studentId: studentAtTargetPosition.id,
+                            previousPosition: studentAtTargetPosition.sitzplatz
+                        }
+                    }
+                }
 			}
 
-			const updateCourse:{[key:string]:any} = {lessons:{}};
-			updateCourse.lessons[lessonId ?? ""] = updateLesson;
+            updateLesson.editHistory = editHistory;
 
-			const updateAccount:{[key:string]:any} = {courses:{}};
-			updateAccount.courses[courseId ?? ""] = updateCourse;
+            const updateAccount = {
+                courses:{
+                    [courseId ?? ""]:{
+                        lessons:{
+                            [lessonId ?? ""]: updateLesson
+                        }
+                    }
+                }
+            }
 
 			SetAccount(updateObject<Account>(account,updateAccount));
         }
@@ -108,12 +168,45 @@ export default function LessonPage(){
         SetAccount(updateObject<Account>(account,updateAccount));
     }
 
+
     function studentByPosition(x:number, y:number){
 		return Object.values(lessonToDisplay.students).find((student)=>student.sitzplatz[0]===x&&student.sitzplatz[1]===y);
     }
 
     function undo(){
+        if(!lessonToDisplay.editHistory || !Object.keys(lessonToDisplay.editHistory) || !courseId || !lessonId || !account)
+            return;
+        const editHistoryId = `${Object.keys(lessonToDisplay.editHistory).length-1}`;
+        const lastEditHistoryEntry = lessonToDisplay.editHistory[editHistoryId];
+        
+        const lessonUpdate:{[key:string]:any} = {students:{}};
+        
+        for(const operation of Object.values(lastEditHistoryEntry.operations)){
+            let studentUpdate = {};
 
+            if(operation.previousPosition){
+                //lessonUpdate.students[operation.studentId] = {sitzplatz: operation.previousPosition};
+                studentUpdate = {...studentUpdate,sitzplatz: operation.previousPosition};
+            }
+            if(operation.previousRatings){
+                studentUpdate = {...studentUpdate,ratings: operation.previousRatings};
+            }
+            lessonUpdate.students[operation.studentId] = studentUpdate;
+        }
+
+        const accountUpdate = {
+            courses:{
+                [courseId]:{
+                    lessons:{
+                        [lessonId]: lessonUpdate
+                    }
+                }
+            }
+        }
+
+        SetAccount(updateObject<Account>(account, accountUpdate));
+
+        delete lessonToDisplay.editHistory[editHistoryId];
     }
 
     const ratings = Object.entries(account.ratingTypes).map(([id,ratingType])=>{
@@ -148,7 +241,7 @@ export default function LessonPage(){
 				editMode={editMode} 
 				setEditMode={setEditMode} 
 				saveLayout={saveLayout}
-                undoFunction={undo}></LessonMenuBar>
+                undoFunction={Object.keys(lessonToDisplay.editHistory ?? {}).length > 0 ? undo : null}></LessonMenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
             </div>
