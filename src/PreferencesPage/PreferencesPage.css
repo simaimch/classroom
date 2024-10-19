@@ -1,0 +1,23 @@
+details{
+	border: solid #111 2px;
+}
+
+details summary{
+	font-size: 1.5em;
+	background: #111;
+	color: #eee;
+	cursor: pointer;
+}
+
+details summary:hover{
+	background: #333;
+}
+
+details label{
+	font-weight: bold;
+}
+
+details span{
+	display: block;
+	padding-left: 2em;
+}
