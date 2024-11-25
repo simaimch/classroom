@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import '../_ui/MenuBar.css';
 import MenuBar from '../_ui/MenuBar';
+import { EEditMode } from './LessonPage';
 
 export default function LessonMenuBar(
     {
@@ -9,8 +10,8 @@ export default function LessonMenuBar(
         saveLayout,
         undoFunction,
     }:{
-        editMode: boolean,
-        setEditMode: (editMode:boolean)=>any,
+        editMode: EEditMode,
+        setEditMode: (editMode:EEditMode)=>any,
         saveLayout: ()=>any,
         undoFunction: (()=>any) | null,
     }){
@@ -18,8 +19,8 @@ export default function LessonMenuBar(
     let {courseId} = useParams();
 
     const editButton = editMode ? 
-        <button onClick={()=>setEditMode(false)}>Bearbeiten beenden</button> : 
-        <button onClick={()=>setEditMode(true)}>Bearbeiten</button>;
+        <button onClick={()=>setEditMode(EEditMode.None)}>Bearbeiten beenden</button> : 
+        <button onClick={()=>setEditMode(EEditMode.Layout)}>Bearbeiten</button>;
 
     return(
         <MenuBar>

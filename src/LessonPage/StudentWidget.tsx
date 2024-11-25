@@ -1,24 +1,26 @@
 import { useContext } from "react";
-import Student from "../_types/Student";
 import StudentLesson from "../_types/StudentLesson";
-import StudentMoveOverlay from "./StudentMoveOverlay";
 
 import './StudentWidget.css';
 import { AccountContext } from "../_contexts/AccountContext";
 import StudentLabel from "../_ui/StudentLabel";
+import { EEditMode } from "./LessonPage";
+import StudentSelectOverlay from "./StudentSelectOverlay";
 
 export default function StudentWidget(
     {
         student,
         inEditMode,
-        moveFunction,
+        selectFunction,
+        isSelected,
         addRatingFunction,
     }
     :
     {
         student:StudentLesson,
-        inEditMode:boolean,
-        moveFunction:(deltaX:number,deltaY:number)=>any,
+        inEditMode:EEditMode,
+        selectFunction:(studentId:string)=>any,
+        isSelected:boolean,
         addRatingFunction:()=>any,
     }
 ){
@@ -39,12 +41,14 @@ export default function StudentWidget(
 
     if(inEditMode)
         classes.push("editing");
+    if(isSelected)
+        classes.push("selected");
 
-    const currentRatings = Object.entries(student.ratings).map(
+    const currentRatings:JSX.Element[] = Object.entries(student.ratings).map(
         ([ratingId, count])=>{
             const rating = account.ratingTypes[ratingId];
             if(!rating)
-                return <></>;
+                return <div key={"none"} style={{"display":"none"}}></div>;
             return <div key={ratingId}>{count}x {rating.label}</div>;
         }
     );
@@ -52,7 +56,7 @@ export default function StudentWidget(
     return (
         <div className={classes.join(" ")} style={style}>
             {
-                inEditMode && <StudentMoveOverlay moveFunction={moveFunction}></StudentMoveOverlay>
+                inEditMode === EEditMode.Layout && <StudentSelectOverlay selectFunction={()=>{selectFunction(student.id)}}></StudentSelectOverlay>
             }
             {
                 !inEditMode && <>

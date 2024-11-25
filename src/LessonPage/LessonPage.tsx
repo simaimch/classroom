@@ -13,13 +13,25 @@ import LessonMenuBar from "./LessonMenuBar";
 import { EditHistoryEntry } from "../_types/Lesson";
 import arrayToHSL from "../_ui/arrayToHSL";
 
+export enum EEditMode{
+    None,
+    Layout,
+}
+
+type MoveResult = {
+    success: boolean,
+    replacedKey: string|null
+}
+
 export default function LessonPage(){
     let {courseId, lessonId} = useParams();
 	const account = useContext(AccountContext);
 
-    const [editMode, setEditMode] = useState<boolean>(false);
+    const [editMode, setEditMode] = useState<EEditMode>(EEditMode.None);
 
     const [selectedRating,setSelectedRating] = useState<string>("");
+
+    const [selectedStudent, setSelectedStudent] = useState<string>("");
 
     if(!account)
         return (<>Account connection failed</>);
@@ -35,11 +47,15 @@ export default function LessonPage(){
 	const courseToDisplay = account.courses[courseId];
     const lessonToDisplay = courseToDisplay.lessons[lessonId];
 
-    const layoutWidth = Object.entries(lessonToDisplay.students).reduce((prev,current)=>Math.max(prev,current[1].sitzplatz[0]),4);
-    const laxoutHeight = Object.entries(lessonToDisplay.students).reduce((prev,current)=>Math.max(prev,current[1].sitzplatz[1]),4);
+    const layoutWidth = Object.entries(lessonToDisplay.students)
+                            .reduce((prev,current)=>Math.max(prev,current[1].sitzplatz[0]),4)
+                            + (editMode === EEditMode.Layout ? 2 : 0);
+    const layoutHeight = Object.entries(lessonToDisplay.students)
+                            .reduce((prev,current)=>Math.max(prev,current[1].sitzplatz[1]),4)
+                            + (editMode === EEditMode.Layout ? 2 : 0);
 
     const studentsStyle = {
-        "--rowCount": laxoutHeight,
+        "--rowCount": layoutHeight,
         "--columnCount": layoutWidth,
     } as React.CSSProperties;
 
@@ -87,13 +103,13 @@ export default function LessonPage(){
         SetAccount(updateObject<Account>(account,updateAccount));
     }
 
-    function moveFunction(student:StudentLesson):(deltaX:number,deltaY:number)=>any{
-        return function(deltaX:number,deltaY:number){
+    function move(studentId:string, destinationX:number, destinationY:number):MoveResult{
+        const student = lessonToDisplay.students[studentId];
 			if(!account)
 				throw new Error("Account unset");
 			const targetPosition = [
-                Math.max(1,student.sitzplatz[0]+deltaX),
-                Math.max(1,student.sitzplatz[1]+deltaY)
+                Math.max(1,destinationX),
+                Math.max(1,destinationY)
             ];
 			const studentAtTargetPosition = studentByPosition(targetPosition[0],targetPosition[1]);
             
@@ -143,7 +159,10 @@ export default function LessonPage(){
             }
 
 			SetAccount(updateObject<Account>(account,updateAccount));
-        }
+        return {
+            success: true,
+            replacedKey: (studentAtTargetPosition ? studentAtTargetPosition.id : null)
+        };
     }
 
     function saveLayout(){
@@ -228,12 +247,41 @@ export default function LessonPage(){
                 <StudentWidget
                     student={student}
                     inEditMode={editMode}
-                    moveFunction={moveFunction(student)}
+                    selectFunction={(key:string)=>setSelectedStudent(key)}
+                    isSelected={id==selectedStudent}
                     addRatingFunction={addRatingFunction(student, selectedRating)}
                 ></StudentWidget>
             </div>
         );
     });
+
+    const studentsRepositionTargets:JSX.Element[] = [];
+    for(let y=1; y<= layoutHeight; y++){
+        for(let x=1; x<= layoutWidth; x++){
+            const style:React.CSSProperties = {
+                gridColumn: x,
+                gridRow: y
+            }
+            studentsRepositionTargets.push(
+                <div className="repositionTarget"
+                    style={style}
+                    key={`${x}_${y}`}
+                    onClick={()=>{
+                        const moveResult = move(selectedStudent,x,y);
+                        if(moveResult.success){
+                            if(moveResult.replacedKey)
+                                setSelectedStudent(moveResult.replacedKey);
+                            else
+                                setSelectedStudent("");
+                        }
+
+                    }}>
+
+                </div>
+            );
+        }
+    }
+
 
     return(
         <div className="lesson">
@@ -245,6 +293,9 @@ export default function LessonPage(){
                 undoFunction={Object.keys(lessonToDisplay.editHistory ?? {}).length > 0 ? undo : null}></LessonMenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
+                {
+                    editMode === EEditMode.Layout && selectedStudent != "" && studentsRepositionTargets
+                }
             </div>
             <div className="ratings">
                 {ratings}

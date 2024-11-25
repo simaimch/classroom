@@ -98,7 +98,10 @@ export default function PreferencesPage(){
 
             <details>
                 <summary>Daten-Migration</summary>
-                <button onClick={()=>download(`classrooms.txt`,stringToBase64(localStorage.getItem("account")??""))}>Backup runterladen</button>
+                <p>
+                    <button onClick={()=>download(`classrooms.txt`,stringToBase64(localStorage.getItem("account")??""))}>Backup runterladen</button>
+                    <b>Achtung: das Backup enthält unverschlüsselte Personendaten!</b>
+                </p>
                 <p>
                     Daten hochladen: <input type="file" onChange={async function(e){
                         const file = e.target.files?.[0];

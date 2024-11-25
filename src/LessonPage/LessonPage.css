@@ -31,3 +31,6 @@
     grid-area: menu;
 }
 
+.lesson .repositionTarget{
+    z-index: 100;
+}
