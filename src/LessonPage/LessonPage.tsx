@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import "./LessonPage.css";
 import StudentWidget from "./StudentWidget";
-import MenuBar from "./LessonMenuBar";
 import StudentLesson from "../_types/StudentLesson";
 import Account from "../_types/Account";
 import updateObject from "../_helpers/updateObject";
@@ -248,7 +247,7 @@ export default function LessonPage(){
                     student={student}
                     inEditMode={editMode}
                     selectFunction={(key:string)=>setSelectedStudent(key)}
-                    isSelected={id==selectedStudent}
+                    isSelected={id===selectedStudent}
                     addRatingFunction={addRatingFunction(student, selectedRating)}
                 ></StudentWidget>
             </div>
@@ -294,7 +293,7 @@ export default function LessonPage(){
             <div className="students" style={studentsStyle}>
                 {students}
                 {
-                    editMode === EEditMode.Layout && selectedStudent != "" && studentsRepositionTargets
+                    editMode === EEditMode.Layout && selectedStudent !== "" && studentsRepositionTargets
                 }
             </div>
             <div className="ratings">
