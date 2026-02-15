@@ -15,6 +15,7 @@ import updateObject from './_helpers/updateObject';
 import AboutPage from './About/AboutPage';
 import PreferencesPage from './PreferencesPage/PreferencesPage';
 import updateVersion, { CurrentVersion } from './_versioning/updateVersion';
+import RoomPage from './RoomPage/RoomPage';
 
 //#region Account
 	const emptyAccount = new Account();
@@ -62,6 +63,11 @@ function App() {
 								</Route>
 							</Route>
 						</Route>	
+						<Route path="room">
+							<Route path=":roomId">
+								<Route index element={<RoomPage></RoomPage>}></Route>
+							</Route>
+						</Route>
 						<Route path="preferences" element={<PreferencesPage></PreferencesPage>}></Route>
 					</Route>
 				</Routes>

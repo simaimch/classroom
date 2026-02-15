@@ -1,12 +1,15 @@
 import { CurrentVersion } from "../_versioning/updateVersion";
 import Course from "./Course";
 import RatingType from "./RatingType";
+import Room from "./Room";
 
 export default class Account{
     
     initialized:boolean = false;
 
     courses: {[courseId:string]:Course} = {};
+    rooms: Record<string, Room> = {};
+
 
     ratingTypes: {[typeId:string]: RatingType} = {
         "++":{label: '++', points: 3,							color: [120, 1, 0.35]},
