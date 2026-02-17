@@ -51,7 +51,7 @@ export default function AboutWidget(
             {children}
 
             <img id="logo" src={logo} alt='Logo of Edufant'/>
-            <p>Christian Hoffmann, Edufant 2024</p>
+            <p>Christian Hoffmann, Edufant 2026</p>
         </div>
     );
 }
