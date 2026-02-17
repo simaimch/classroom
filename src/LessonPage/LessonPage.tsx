@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, type JSX } from "react";
 import { useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import "./LessonPage.css";
@@ -9,8 +9,9 @@ import updateObject from "../_helpers/updateObject";
 import { SetAccount } from "../App";
 import RatingWidget from "./RatingWidget";
 import LessonMenuBar from "./LessonMenuBar";
-import { EditHistoryEntry } from "../_types/Lesson";
+import type { EditHistoryEntry } from "../_types/Lesson";
 import arrayToHSL from "../_ui/arrayToHSL";
+import type { DeepPartial } from "../_helpers/DeepPartial";
 
 export enum EEditMode{
     None,
@@ -228,13 +229,28 @@ export default function LessonPage(){
         delete lessonToDisplay.editHistory[editHistoryId];
     }
 
+    function roomChange(roomId: string){
+        if (!account)
+            throw new Error("Account unset");
+
+        if (!courseId)
+            throw new Error("courseId unset");
+
+        if (!lessonId)
+            throw new Error("lessonId unset");
+
+        const updateAccount: DeepPartial<Account>= {courses: {[courseId]:{lessons:{[lessonId]:{roomId: roomId}}}}};
+
+        SetAccount(updateObject<Account>(account, updateAccount));
+    }
+
     const ratings = Object.entries(account.ratingTypes).map(([id,ratingType])=>{
         const style = {
             background: arrayToHSL(ratingType.color),
             color:ratingType.color[2] >= 0.35 ? 'black' : 'white',
         };
         return (
-            <div key={id} style={style} className={"rating"+(selectedRating === id ? " selected" : "")} onClick={(e)=>{setSelectedRating(id)}}>
+            <div key={id} style={style} className={"rating"+(selectedRating === id ? " selected" : "")} onClick={(_e)=>{setSelectedRating(id)}}>
                 <RatingWidget ratingType={ratingType}></RatingWidget>
             </div>
         )
@@ -286,10 +302,10 @@ export default function LessonPage(){
         <div className="lesson">
             <h1>{courseToDisplay?.label}, Unterricht {lessonId}</h1>
             <LessonMenuBar 
-				editMode={editMode} 
-				setEditMode={setEditMode} 
-				saveLayout={saveLayout}
-                undoFunction={Object.keys(lessonToDisplay.editHistory ?? {}).length > 0 ? undo : null}></LessonMenuBar>
+                editMode={editMode}
+                setEditMode={setEditMode}
+                saveLayout={saveLayout}
+                undoFunction={Object.keys(lessonToDisplay.editHistory ?? {}).length > 0 ? undo : null} onRoomChange={roomChange}></LessonMenuBar>
             <div className="students" style={studentsStyle}>
                 {students}
                 {
