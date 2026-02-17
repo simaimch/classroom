@@ -8,6 +8,8 @@ export default class Lesson{
     timeStart: number = 0;
     timeEnd: number= Number.MAX_SAFE_INTEGER;
 
+    roomId: string = "";
+
     editHistory?:{[key:string]: EditHistoryEntry} = {};
 }
 
