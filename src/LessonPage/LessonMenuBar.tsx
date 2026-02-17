@@ -25,7 +25,7 @@ export default function LessonMenuBar(
         <button onClick={()=>setEditMode(EEditMode.Layout)}>Bearbeiten</button>;
 
 
-    const rooms = 
+    const rooms = {};
 
     return(
         <MenuBar>
