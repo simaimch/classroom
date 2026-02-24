@@ -1,4 +1,4 @@
-import { Place } from "./Place";
+import type { Place } from "./Place";
 
 export default class Room {
     label: string = "Unbenannt";

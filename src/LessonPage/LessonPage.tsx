@@ -1,26 +1,24 @@
-import { useContext, useState, type JSX } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import "./LessonPage.css";
-import StudentWidget from "./StudentWidget";
-import StudentLesson from "../_types/StudentLesson";
 import Account from "../_types/Account";
 import updateObject from "../_helpers/updateObject";
 import { SetAccount } from "../App";
 import RatingWidget from "./RatingWidget";
 import LessonMenuBar from "./LessonMenuBar";
-import type { EditHistoryEntry } from "../_types/Lesson";
 import arrayToHSL from "../_ui/arrayToHSL";
 import type { DeepPartial } from "../_helpers/DeepPartial";
+import type { Place } from "../_types/Place";
+import type Student from "../_types/Student";
+import parseName from "../_ui/parseName";
+
+const CELL = 32;
+const MARGIN = 2;
 
 export enum EEditMode{
     None,
     Layout,
-}
-
-type MoveResult = {
-    success: boolean,
-    replacedKey: string|null
 }
 
 export default function LessonPage(){
@@ -31,7 +29,7 @@ export default function LessonPage(){
 
     const [selectedRating,setSelectedRating] = useState<string>("");
 
-    const [selectedStudent, setSelectedStudent] = useState<string>("");
+    const [selectedStudentId, setSelectedStudentId] = useState<string>("");
 
     if(!account)
         return (<>Account connection failed</>);
@@ -40,33 +38,82 @@ export default function LessonPage(){
     if(!lessonId)
         return (<>Lesson Id Error</>);
 
-    
-
-	
-
 	const courseToDisplay = account.courses[courseId];
     const lessonToDisplay = courseToDisplay.lessons[lessonId];
 
-    const layoutWidth = Object.entries(lessonToDisplay.students)
-                            .reduce((prev,current)=>Math.max(prev,current[1].sitzplatz[0]),4)
-                            + (editMode === EEditMode.Layout ? 2 : 0);
-    const layoutHeight = Object.entries(lessonToDisplay.students)
-                            .reduce((prev,current)=>Math.max(prev,current[1].sitzplatz[1]),4)
-                            + (editMode === EEditMode.Layout ? 2 : 0);
+    const roomId = lessonToDisplay.roomId;
+    const room = roomId ? account.rooms[roomId] : null;
 
-    const studentsStyle = {
-        "--rowCount": layoutHeight,
-        "--columnCount": layoutWidth,
-    } as React.CSSProperties;
+    type PlaceWithSeatedStudent = Place & {
+        student: Student & {id: string};
+    }
 
-    function addRatingFunction(student:StudentLesson, ratingId:string, inc:number=1){
+    const seats: Record<string, PlaceWithSeatedStudent> = useMemo(()=> room ? Object.fromEntries(Object.entries(room.places).map(([placeId,place])=>{
+        const studentSittingHereForThisLesson = Object.entries(lessonToDisplay.students).find(([_studentId, student])=>student.placeIdByRoom[roomId] == placeId);
+
+        if(studentSittingHereForThisLesson)
+            return [placeId, { ...place, student: { ...studentSittingHereForThisLesson[1], id: studentSittingHereForThisLesson[0] }}];
+
+        const studentSittingHereForThisCourse = Object.entries(courseToDisplay.students).find(([_studentId, student]) => student.placeIdByRoom[roomId] == placeId);
+        if (studentSittingHereForThisCourse){
+            const studentSittingHereForThisCourseId = studentSittingHereForThisCourse[0];
+            const studentHasLeftHisPlaceForThisLesson = lessonToDisplay.students[studentSittingHereForThisCourseId].placeIdByRoom[roomId] == "-";
+            if(!studentHasLeftHisPlaceForThisLesson)
+                return [placeId, { ...place, student: { ...studentSittingHereForThisCourse[1], id: studentSittingHereForThisCourse[0] } }];
+        }
+
+        return [placeId,{...place, studentId: null}];
+    })) : {},[account]);
+
+    const unseatedStudents = Object.fromEntries(
+                                Object.entries(courseToDisplay.students)
+                                    .filter(([studentId,_student])=>!Object.entries(seats).find(([_seatId,seat])=>seat.student?.id == studentId))
+                            );
+
+    const bounds = useMemo(() => {
+        if (Object.entries(seats).length === 0) {
+                return {
+                    minX: -MARGIN,
+                    maxX: MARGIN,
+                    minY: -MARGIN,
+                    maxY: MARGIN,
+                };
+            }
+    
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+    
+         Object.values(seats).forEach(r => {
+                minX = Math.min(minX, r.x);
+                minY = Math.min(minY, r.y);
+                maxX = Math.max(maxX, r.x + r.width);
+                maxY = Math.max(maxY, r.y + r.height);
+            });
+    
+            return {
+                minX: minX - MARGIN,
+                minY: minY - MARGIN,
+                maxX: maxX + MARGIN,
+                maxY: maxY + MARGIN,
+            };
+    }, [seats]);
+
+
+    const width = bounds.maxX - bounds.minX;
+    const height = bounds.maxY - bounds.minY;
+
+
+
+    /*function addRatingFunction(student:StudentLesson, ratingId:string, inc:number=1){
         return function(){
             const targetRating = (student.ratings[selectedRating] || 0)+inc;
             setRating(student, ratingId, targetRating);
         }
-    }
+    }*/
 
-    function setRating(student:StudentLesson, ratingId:string, targetValue:number){
+    /*function setRating(student:StudentLesson, ratingId:string, targetValue:number){
         if(!account || !courseId || !lessonId)
             return;
 
@@ -101,69 +148,7 @@ export default function LessonPage(){
         };
         const updateAccount:{[key:string]:any} = {courses:{[courseId]: updateCourse}};
         SetAccount(updateObject<Account>(account,updateAccount));
-    }
-
-    function move(studentId:string, destinationX:number, destinationY:number):MoveResult{
-        const student = lessonToDisplay.students[studentId];
-			if(!account)
-				throw new Error("Account unset");
-			const targetPosition = [
-                Math.max(1,destinationX),
-                Math.max(1,destinationY)
-            ];
-			const studentAtTargetPosition = studentByPosition(targetPosition[0],targetPosition[1]);
-            
-            const editHistory = (lessonToDisplay.editHistory) ?? {};
-			const updateLesson:{[key:string]:any} = {students:{}};
-
-			const updateSutdent:StudentLesson = {...student};
-			updateSutdent.sitzplatz = targetPosition;
-
-			updateLesson.students[updateSutdent.id] = updateSutdent;
-            
-            const editHistoryId = Object.keys(editHistory).length + "";
-            editHistory[editHistoryId] = {
-                time: Date.now(),
-                operations: {
-                    '0':{
-                        studentId: student.id,
-                        previousPosition: student.sitzplatz
-                    }
-                }
-            }
-
-			if(studentAtTargetPosition){
-				const updateStudentAtTarget:StudentLesson = {...studentAtTargetPosition, sitzplatz: student.sitzplatz};
-				updateLesson.students[updateStudentAtTarget.id] = updateStudentAtTarget;
-                editHistory[editHistoryId] = {
-                    time: Date.now(),
-                    operations: {
-                        '1':{
-                            studentId: studentAtTargetPosition.id,
-                            previousPosition: studentAtTargetPosition.sitzplatz
-                        }
-                    }
-                }
-			}
-
-            updateLesson.editHistory = editHistory;
-
-            const updateAccount = {
-                courses:{
-                    [courseId ?? ""]:{
-                        lessons:{
-                            [lessonId ?? ""]: updateLesson
-                        }
-                    }
-                }
-            }
-
-			SetAccount(updateObject<Account>(account,updateAccount));
-        return {
-            success: true,
-            replacedKey: (studentAtTargetPosition ? studentAtTargetPosition.id : null)
-        };
-    }
+    }*/
 
     function saveLayout(){
         if(!account)
@@ -175,23 +160,30 @@ export default function LessonPage(){
         if(!lessonId)
             throw new Error("lessonId unset");
 
-        const updateCourse:{[key:string]:any} = {students:{}};
         
-        for(const [studentId,student] of Object.entries(lessonToDisplay.students)){
-            updateCourse.students[studentId] = {sitzplatz: student.sitzplatz};
+        let updateAccount = {
+
+        };
+
+        for(const [studentId, student] of Object.entries(lessonToDisplay.students)){
+            updateAccount = updateObject(updateAccount,{
+                courses:{
+                    [courseId]:{
+                        students:{
+                            [studentId]:{
+                                placeIdByRoom:{
+                                    [roomId]: student.placeIdByRoom[roomId]
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
-
-        const updateAccount:{[key:string]:any} = {courses:{[courseId]: updateCourse}};
-
-        console.warn(updateAccount);
 
         SetAccount(updateObject<Account>(account,updateAccount));
     }
 
-
-    function studentByPosition(x:number, y:number){
-		return Object.values(lessonToDisplay.students).find((student)=>student.sitzplatz[0]===x&&student.sitzplatz[1]===y);
-    }
 
     function undo(){
         if(!lessonToDisplay.editHistory || !Object.keys(lessonToDisplay.editHistory) || !courseId || !lessonId || !account)
@@ -256,47 +248,72 @@ export default function LessonPage(){
         )
     });
 
-    const students = Object.entries(lessonToDisplay.students).map(([id,student])=>{
-        return (
-            <div className="container" key={id}>
-                <StudentWidget
-                    student={student}
-                    inEditMode={editMode}
-                    selectFunction={(key:string)=>setSelectedStudent(key)}
-                    isSelected={id===selectedStudent}
-                    addRatingFunction={addRatingFunction(student, selectedRating)}
-                ></StudentWidget>
-            </div>
-        );
-    });
 
-    const studentsRepositionTargets:JSX.Element[] = [];
-    for(let y=1; y<= layoutHeight; y++){
-        for(let x=1; x<= layoutWidth; x++){
-            const style:React.CSSProperties = {
-                gridColumn: x,
-                gridRow: y
-            }
-            studentsRepositionTargets.push(
-                <div className="repositionTarget"
-                    style={style}
-                    key={`${x}_${y}`}
-                    onClick={()=>{
-                        const moveResult = move(selectedStudent,x,y);
-                        if(moveResult.success){
-                            if(moveResult.replacedKey)
-                                setSelectedStudent(moveResult.replacedKey);
-                            else
-                                setSelectedStudent("");
-                        }
-
-                    }}>
-
-                </div>
-            );
+    function handleClick(placeId:string){
+        if(selectedStudentId){
+            seatStudent(placeId, selectedStudentId);
+            setSelectedStudentId("");
         }
     }
 
+    function seatStudent(placeId:string, studentId:string){
+        if(!room || !courseId || !lessonId || !account) return;
+        
+        const place = seats[placeId];
+        if(!place) return;
+
+        const studentOnThisPlace = place.student?.id;
+        if(studentOnThisPlace == studentId) return;
+
+        if(!studentOnThisPlace){
+            SetAccount(updateObject(account, { courses: { [courseId]: { lessons: { [lessonId]: { students: { [studentId]: { placeIdByRoom: { [roomId]: placeId } } }}}}}}));
+        }else{
+            SetAccount(updateObject(account, { courses: { [courseId]: { lessons: { [lessonId]: { students: 
+                { 
+                    [studentId]: { placeIdByRoom: {[roomId]: placeId} },
+                    [studentOnThisPlace]: { placeIdByRoom: { [roomId]: "-" } },
+                } 
+            } } } } }));
+        }
+        
+    }
+
+    function handleRightClick(){
+
+    }
+
+    const svgPlaces = Object.entries(seats).map(([placeId, placeWithStudentId]) => {
+
+        const x = (placeWithStudentId.x - bounds.minX) * CELL;
+        const y = (placeWithStudentId.y - bounds.minY) * CELL;
+        const w = placeWithStudentId.width * CELL;
+        const h = placeWithStudentId.height * CELL;
+
+        return <g key={placeId}>
+                <rect
+                    x={x}
+                    y={y}
+                    width={w}
+                    height={h}
+                    fill="steelblue"
+                    stroke="black"
+                    onClick={() => handleClick(placeId)}
+                />
+                {placeWithStudentId.student && 
+                    <text
+                        x={x + w / 2}
+                        y={y + h / 2}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize={Math.min(w, h) * 0.4}
+                        fill="white"
+                        pointerEvents="none"
+                    >
+                        {parseName(placeWithStudentId.student.name, account?.preferences.studentLabeling ?? "")}
+                    </text>
+                }
+            </g>
+    })
 
     return(
         <div className="lesson">
@@ -306,11 +323,29 @@ export default function LessonPage(){
                 setEditMode={setEditMode}
                 saveLayout={saveLayout}
                 undoFunction={Object.keys(lessonToDisplay.editHistory ?? {}).length > 0 ? undo : null} onRoomChange={roomChange}></LessonMenuBar>
-            <div className="students" style={studentsStyle}>
-                {students}
-                {
-                    editMode === EEditMode.Layout && selectedStudent !== "" && studentsRepositionTargets
-                }
+
+            <div id="unseatedStudents">
+                <ul>
+                    {Object.entries(unseatedStudents).map(([studentId,student])=>
+                        <li 
+                            key={studentId}
+                            onClick={() => setSelectedStudentId(studentId)}
+                            className={selectedStudentId == studentId ? "selected": ""}
+                        >{student.name}</li>
+                    )}
+                </ul>
+            </div>
+            <div id="seatedStudents">
+                <svg
+                    viewBox={`0 0 ${width*CELL} ${height*CELL}`}
+                    onContextMenu={handleRightClick}
+                    preserveAspectRatio="xMidYMid meet"
+                    style={{ border: "1px solid black" }}
+                >
+
+                    {svgPlaces}
+
+                </svg>
             </div>
             <div className="ratings">
                 {ratings}

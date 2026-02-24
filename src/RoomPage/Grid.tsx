@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from "react";
-import { EPlaceForm, Place } from "../_types/Place";
+import { EPlaceForm, type Place } from "../_types/Place";
 import { AccountContext } from "../_contexts/AccountContext";
 import Room from "../_types/Room";
 import { SetAccount } from "../App";

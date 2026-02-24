@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, type JSX } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import StudentEntry from "./StudentEntry";
@@ -47,7 +47,7 @@ export default function CoursePage(){
 	const lessonsEntries:JSX.Element[] = [];
 
 	Object.entries(courseToDisplay?.lessons ?? {})
-		.sort(([lidA,lessonA],[lidB,lessonB])=>lessonB.timeStart-lessonA.timeStart)
+		.sort(([_lidA,lessonA],[_lidB,lessonB])=>lessonB.timeStart-lessonA.timeStart)
 		.forEach(
 			([id,lesson]) =>
 			{
@@ -57,7 +57,7 @@ export default function CoursePage(){
 					lessonsEntries.push(<li className="header" key={lastTimeAgoCategory}><div className="label">{lastTimeAgoCategory}</div></li>);
 				}
 				lessonsEntries.push(
-						<li className="entry" key={id} onClick={(e)=>{navigate(`lesson/${id}`)}}>
+						<li className="entry" key={id} onClick={(_e)=>{navigate(`lesson/${id}`)}}>
 							<LessonEntry lesson={lesson} deleteFunction={()=>deleteLesson(id)}></LessonEntry>
 							
 						</li>);
@@ -66,7 +66,7 @@ export default function CoursePage(){
 		);
 
 	const studentsList = Object.entries(courseToDisplay?.students ?? {})
-		.sort(([idA,studentA],[idB,studentB])=>studentA.name.localeCompare(studentB.name))
+		.sort(([_idA,studentA],[_idB,studentB])=>studentA.name.localeCompare(studentB.name))
 		.map(
 			([id, student]) => 
 			{

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Student from './_types/Student';
 import './StudentView.css';
 

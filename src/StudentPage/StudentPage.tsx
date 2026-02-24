@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AccountContext } from "../_contexts/AccountContext";
 import { Line } from "react-chartjs-2";
-import { CategoryScale, Chart, ChartData, ChartDataset, Legend, LineElement, LinearScale, PointElement, Tooltip } from "chart.js";
+import { CategoryScale, Chart, Legend, LineElement, LinearScale, PointElement, Tooltip, type ChartData, type ChartDataset } from "chart.js";
 import Menu from "./Menu";
 import '../_ui/List.css';
 import { SetAccount } from "../App";
@@ -44,7 +44,7 @@ export default function StudentPage(){
     const dataSets:ChartDataset<"line",number[]>[] = Object.entries(account.ratingTypes).map(([ratingTypeId,ratingType])=>{
         return {
             label: ratingType.label,
-            data: Object.entries(studentLessons).map(([lessonId,lessonData])=>lessonData.ratings[ratingTypeId] ?? 0),
+            data: Object.entries(studentLessons).map(([_lessonId,lessonData])=>lessonData.ratings[ratingTypeId] ?? 0),
             fill: false,
             tension: 0.1,
             borderColor: arrayToHSL(ratingType.color),
@@ -75,7 +75,7 @@ export default function StudentPage(){
                 <Line data={data} options={{
                     scales:{
                         xAxes:{
-                            labels: Object.entries(studentLessons).map(([lessonId,lessonData])=>new Date(lessonData.lesson.timeStart).toLocaleString()),
+                            labels: Object.entries(studentLessons).map(([_lessonId,lessonData])=>new Date(lessonData.lesson.timeStart).toLocaleString()),
                             ticks:{
                                 autoSkip:false,maxRotation:45,minRotation:45
                             }

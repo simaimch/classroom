@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MenuBar from "../_ui/MenuBar";
 import { useContext } from "react";
 import { AccountContext } from "../_contexts/AccountContext";
@@ -10,7 +10,7 @@ export default function RoomPage(){
     let {roomId} = useParams();
     let account = useContext(AccountContext);
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const roomToDisplay = account?.rooms[roomId ?? ""];
 
